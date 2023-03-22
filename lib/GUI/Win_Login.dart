@@ -48,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'Enter if you dare',
+              'Enter your username and password:',
             ),
             TextField(
               controller: _username_controller,
