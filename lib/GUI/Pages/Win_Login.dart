@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'Win_Manager_View.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+class Win_Login extends StatefulWidget {
+  const Win_Login({super.key});
 
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<Win_Login> createState() => _Win_LoginState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _Win_LoginState extends State<Win_Login> {
 
   String page_name = "Login Window";
 
@@ -65,7 +66,10 @@ class _MyHomePageState extends State<MyHomePage> {
             labelText: 'Password',
           ),),
             ElevatedButton(onPressed: (){
-              _change_page_name();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Win_Manager_View()),
+              );
 
             }, child: Text("Login"))
           ],
