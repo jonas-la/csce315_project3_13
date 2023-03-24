@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'Win_Manager_View.dart';
 
-class Win_Login extends StatefulWidget {
-  const Win_Login({super.key});
-
+class Win_Login_Start extends StatefulWidget {
+  const Win_Login_Start({super.key});
 
   @override
-  State<Win_Login> createState() => _Win_LoginState();
+  State<Win_Login_Start> createState() => _Win_Login_StartState();
 }
 
-class _Win_LoginState extends State<Win_Login> {
+class _Win_Login_StartState extends State<Win_Login_Start> {
 
   String page_name = "Login Window";
 

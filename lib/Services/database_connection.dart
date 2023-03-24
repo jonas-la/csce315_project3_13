@@ -1,0 +1,4 @@
+
+class database_connection{
+
+}

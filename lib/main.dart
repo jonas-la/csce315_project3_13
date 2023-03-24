@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-
 import 'GUI/Pages/Win_Login.dart';
 
 Future<void> main() async {
@@ -22,7 +21,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Win_Login(),
+      home: Win_Login_Start(),
 
       // FutureBuilder(
       //   future: _initialization,

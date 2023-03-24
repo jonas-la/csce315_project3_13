@@ -26,7 +26,7 @@ class _Win_Manager_ViewState extends State<Win_Manager_View> {
             ElevatedButton(onPressed: (){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const Win_Login()),
+                MaterialPageRoute(builder: (context) => const Win_Login_Start()),
               );
 
             }, child: Text("Log out"))
