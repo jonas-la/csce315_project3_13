@@ -1,40 +1,62 @@
-//const functions = require("firebase-functions");
-
-// // Create and deploy your first functions
-// // https://firebase.google.com/docs/functions/get-started
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
-
-//exports.listFruit = functions.https.onCall((data, context) => {
-//  return ["Apple", "Banana", "Cherry", "Date", "Fig", "Grapes"]
-//});
-
 const functions = require('firebase-functions');
 const { Client } = require('pg');
 
+exports.listFruit = functions.https.onCall((data, context) => {
+  return ["Apple", "Banana", "Cherry", "Date", "Fig", "Grapes"]
+});
 
 
-exports.getTestResult = functions.https.onCall(async (data, context) => {
-//async function myAsyncFunction() {
+
+exports.getEmployeesTest = functions.https.onCall(async (data, context) => {
     const client = new Client({
       host: 'csce-315-db.engr.tamu.edu',
       user: 'csce315331_team_13_master',
       password: 'Lucky_13',
       database: 'csce315331_team_13',
       port: 5432,
-    });
+    })
 
-    client.connect();
-    client.query('SELECT * FROM employees', (err, res) => {
-      if (err) throw err;
-      console.log(res.rows);
-      client.end();
-    });
-
+    await client.connect()
+    const res = await client.query('SELECT * FROM employees')
+    console.log(res.rows)
+    client.end()
+    return res.rows
 });
+
+
+
+
+
+//exports.getTestResult = functions.https.onCall(async (data, context) => {
+//    const client = new Client({
+//      host: 'csce-315-db.engr.tamu.edu',
+//      user: 'csce315331_team_13_master',
+//      password: 'Lucky_13',
+//      database: 'csce315331_team_13',
+//      port: 5432,
+//    });
+//
+//    client.connect();
+//    client.query('SELECT * FROM employees', (err, res) => {
+//      if (err) throw err;
+//      console.log(res.rows);
+//      client.end();
+//    });
+//
+//});
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //}
 
