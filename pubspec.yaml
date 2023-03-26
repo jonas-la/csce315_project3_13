@@ -39,6 +39,8 @@ dependencies:
   postgresql2: ^1.0.4
   cloud_functions: ^4.0.13
   http: ^0.13.5
+  postgrest: ^1.2.2
+  postgres: ^2.6.1
 
 dev_dependencies:
   flutter_test:
