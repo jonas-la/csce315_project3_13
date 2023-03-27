@@ -1,7 +1,9 @@
+import 'package:csce315_project3_13/GUI/Components/ExampleButton.dart';
 import 'package:csce315_project3_13/GUI/Pages/Win_Login.dart';
 import 'package:flutter/material.dart';
 
 class Win_Manager_View extends StatefulWidget {
+  static const String route = '/manager-view';
   const Win_Manager_View({Key? key}) : super(key: key);
 
   @override
@@ -23,13 +25,12 @@ class _Win_Manager_ViewState extends State<Win_Manager_View> {
             const Text(
               'Logged in',
             ),
-            ElevatedButton(onPressed: (){
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const Win_Login_Start()),
-              );
-
-            }, child: Text("Log out"))
+            ExampleButton(onTap: (){
+              print("Logging out");
+              Navigator.pop(context);
+            },
+            buttonName: "Log out"
+            ),
           ],
         ),
       ),

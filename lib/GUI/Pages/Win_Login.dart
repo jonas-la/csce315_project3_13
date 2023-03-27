@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
 import 'Win_Manager_View.dart';
 
-class Win_Login_Start extends StatefulWidget {
-  const Win_Login_Start({super.key});
+class Win_Login extends StatefulWidget {
+  static const String route = '/login';
+  const Win_Login({super.key});
 
   @override
-  State<Win_Login_Start> createState() => _Win_Login_StartState();
+  State<Win_Login> createState() => _Win_LoginState();
 }
 
-class _Win_Login_StartState extends State<Win_Login_Start> {
+class _Win_LoginState extends State<Win_Login> {
 
   String page_name = "Login Window";
 
   late TextEditingController _username_controller;
   late TextEditingController _password_controller;
 
-  void _change_page_name() {
-    setState(() {
-      page_name = _username_controller.text;
-    });
+  void _login(BuildContext context){
+    Navigator.pushNamed(context, Win_Manager_View.route);
   }
 
   @override
@@ -53,24 +52,20 @@ class _Win_Login_StartState extends State<Win_Login_Start> {
             TextField(
               controller: _username_controller,
               obscureText: false,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Username',
               ),),
         TextField(
           controller: _password_controller,
           obscureText: true,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             border: OutlineInputBorder(),
             labelText: 'Password',
           ),),
             ElevatedButton(onPressed: (){
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const Win_Manager_View()),
-              );
-
-            }, child: Text("Login"))
+              _login(context);
+            }, child: const Text("Login"))
           ],
         ),
       ),
