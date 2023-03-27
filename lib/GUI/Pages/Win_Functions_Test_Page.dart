@@ -1,4 +1,3 @@
-import 'package:csce315_project3_13/Services/testing_dart_psql.dart';
 import 'package:flutter/material.dart';
 import '../../Services/testing_cloud_functions.dart';
 import 'Win_Manager_View.dart';
@@ -13,21 +12,6 @@ class Win_Functions_Test_Page extends StatefulWidget {
 class _Win_Functions_Test_Page_StartState extends State<Win_Functions_Test_Page> {
 
   testing_cloud_functions cloud_functions_tester = testing_cloud_functions();
-
-  testing_dart_psql dart_psql_tester = testing_dart_psql();
-
-
-  @override
-  void initState() {
-    super.initState();
-
-  }
-
-  @override
-  void dispose() {
-
-    super.dispose();
-  }
 
 
   @override
@@ -52,10 +36,13 @@ class _Win_Functions_Test_Page_StartState extends State<Win_Functions_Test_Page>
             ElevatedButton(onPressed: (){
               cloud_functions_tester.getEmployees();
             }, child: const Text("Test Firebase Function")),
-
+            const SizedBox(
+              height: 20,
+            ),
             ElevatedButton(onPressed: (){
-              dart_psql_tester.connectToPostgreSQL();
-            }, child: const Text("Test Dart PSQL")),
+              cloud_functions_tester.getEmployeeByID(2);
+            }, child: const Text("Test Firebase Function with parameter")),
+
 
 
             // t
