@@ -3,6 +3,7 @@ import '../../Services/testing_cloud_functions.dart';
 import 'Win_Manager_View.dart';
 
 class Win_Functions_Test_Page extends StatefulWidget {
+  static const String route = '/functions-test-page';
   const Win_Functions_Test_Page({super.key});
 
   @override
@@ -25,13 +26,6 @@ class _Win_Functions_Test_Page_StartState extends State<Win_Functions_Test_Page>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-
-            ElevatedButton(onPressed: (){
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const Win_Manager_View()),
-              );
-            }, child: const Text("Login")),
 
             ElevatedButton(onPressed: (){
               cloud_functions_tester.getEmployees();
