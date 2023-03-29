@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'Win_Manager_View.dart';
+import '../Win_Manager_View.dart';
 
 class Win_Login extends StatefulWidget {
   static const String route = '/login';

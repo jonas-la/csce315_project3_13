@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../Services/testing_cloud_functions.dart';
-import 'Win_Manager_View.dart';
+import '../../../Services/testing_cloud_functions.dart';
+import '../Win_Manager_View.dart';
 
 class Win_Functions_Test_Page extends StatefulWidget {
   static const String route = '/functions-test-page';

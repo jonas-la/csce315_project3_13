@@ -2,8 +2,6 @@ import 'package:cloud_functions/cloud_functions.dart';
 
 class testing_cloud_functions{
 
-  // This creates an instance of the FirebaseFunctions class we can use to call functions
-  FirebaseFunctions functions = FirebaseFunctions.instance;
 
   // In Dart, Future is a return type that means at some point the value will be given
   // the type of what is actually returned should be specified in <>
