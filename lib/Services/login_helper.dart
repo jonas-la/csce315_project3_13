@@ -4,6 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class login_helper{
   // final FirebaseAuth _auth = FirebaseAuth.instance;
+  late FirebaseFunctions my_functions;
+
+  login_helper(){
+    my_functions = FirebaseFunctions.instance;
+  }
 
   Future<void> modify_results(String employee_uid) async {
       // final my_results = await get_employee_by_UID(employee_uid);
@@ -11,7 +16,7 @@ class login_helper{
   }
 
   Future<void> test_id() async {
-    final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('getOneEmployeeByIdTest');
+    final HttpsCallable callable = my_functions.httpsCallable('getOneEmployeeByIdTest');
 
 // Call the function with the employee UID as input
     final results = await callable.call(<String, dynamic>{
@@ -25,7 +30,7 @@ class login_helper{
   }
 
   Future<void> test_uid() async {
-    final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('getEmployeeByUID');
+    final HttpsCallable callable = my_functions.httpsCallable('getEmployeeByUID');
 
 // Call the function with the employee UID as input
     final results = await callable.call(<String, dynamic>{
@@ -39,7 +44,7 @@ class login_helper{
   }
 
   Future<void> get_employee_by_UID(String employee_uid) async {
-    final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('getEmployeeByUID');
+    final HttpsCallable callable = my_functions.httpsCallable('getEmployeeByUID');
 
 // Call the function with the employee UID as input
     final results = await callable.call(<String, dynamic>{
