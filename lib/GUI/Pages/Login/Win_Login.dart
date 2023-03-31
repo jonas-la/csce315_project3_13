@@ -23,7 +23,7 @@ class _Win_LoginState extends State<Win_Login> {
   void _login(BuildContext context) async {
     bool sign_in_successful = await login_helper_instance.signInWithEmailAndPassword(_username_controller.text, _password_controller.text);
     if(sign_in_successful){
-      Navigator.pushNamed(context, Win_Functions_Test_Page.route);
+      Navigator.pushReplacementNamed(context, Win_Functions_Test_Page.route);
     }else{
       print("Failed login");
     }
