@@ -12,6 +12,34 @@ class Win_Order extends StatefulWidget {
 class Win_Order_State extends State<Win_Order> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 100,
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: SizedBox(
+          height: 80,
+          child: Image.asset(
+            'assets/logo.png',
+            fit: BoxFit.contain,
+          ),
+        ),
+        centerTitle: true,
+      ),
+        body: Row(
+          children: [
+            Expanded(
+                child: Container(
+                  color: Colors.yellow,
+                )
+            ),
+            Expanded(
+                child: Container(
+                  color: Colors.red,
+                )
+            ),
+        ]
+      )
+    );
   }
 }
