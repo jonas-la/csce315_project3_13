@@ -39,10 +39,18 @@ class _Win_Functions_Test_Page_StartState extends State<Win_Functions_Test_Page>
             ElevatedButton(onPressed: (){
               cloud_functions_tester.getEmployeeByID(2);
             }, child: const Text("Test Firebase Function with parameter")),
-
+            const SizedBox(
+              height: 20,
+            ),
             ElevatedButton(onPressed: (){
               login_helper_instance.is_signed_in();
             }, child: const Text("Get logged in user")),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(onPressed: (){
+              login_helper_instance.get_firebase_uid();
+            }, child: const Text("Get UID")),
 
 
 

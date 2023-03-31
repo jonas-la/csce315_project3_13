@@ -37,16 +37,18 @@ class login_helper{
   }
 
 
-  Future<bool> get_firebase_uid() async {
+  Future<String> get_firebase_uid() async {
     final user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
-      print("Signed in as: ");
-      print(user.email);
+      print("Signed in and UID is:");
+      print(user.uid);
+      return user.uid;
     }else{
       print("Not logged in");
+      return "";
     }
 
-    return user != null;
+
   }
 }
