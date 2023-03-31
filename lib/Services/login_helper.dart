@@ -51,4 +51,9 @@ class login_helper{
 
 
   }
+
+
+  Future<void> sign_out() async {
+    await FirebaseAuth.instance.signOut();
+  }
 }
