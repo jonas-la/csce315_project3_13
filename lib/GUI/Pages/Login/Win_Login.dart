@@ -1,3 +1,5 @@
+import 'package:csce315_project3_13/GUI/Pages/Test%20Pages/Win_Functions_Test_Page.dart';
+import 'package:csce315_project3_13/Services/login_helper.dart';
 import 'package:flutter/material.dart';
 import '../Win_Manager_View.dart';
 
@@ -16,8 +18,16 @@ class _Win_LoginState extends State<Win_Login> {
   late TextEditingController _username_controller;
   late TextEditingController _password_controller;
 
-  void _login(BuildContext context){
-    Navigator.pushNamed(context, Win_Manager_View.route);
+  login_helper login_helper_instance = login_helper();
+
+  void _login(BuildContext context) async {
+    bool sign_in_successful = await login_helper_instance.signInWithEmailAndPassword(_username_controller.text, _password_controller.text);
+    if(sign_in_successful){
+      Navigator.pushNamed(context, Win_Functions_Test_Page.route);
+    }else{
+      print("Failed login");
+    }
+
   }
 
   @override
@@ -58,6 +68,9 @@ class _Win_LoginState extends State<Win_Login> {
               ),),
         TextField(
           controller: _password_controller,
+          onSubmitted: (String pass_string){
+            _login(context);
+          },
           obscureText: true,
           decoration: const InputDecoration(
             border: OutlineInputBorder(),

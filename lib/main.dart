@@ -8,7 +8,7 @@ import 'GUI/Pages/Login/Win_Login.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
         Win_Manager_View.route: (BuildContext context) => Win_Manager_View(),
         Win_Functions_Test_Page.route: (BuildContext context) => Win_Functions_Test_Page(),
       },
-      initialRoute:  Win_Login.route,
+      initialRoute: Win_Login.route,
     );
   }
 }
