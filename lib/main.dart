@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'GUI/Pages/Login/Win_Login.dart';
+import 'GUI/Pages/Order/Win_Order.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         Win_Login.route: (BuildContext context) => Win_Login(),
         Win_Manager_View.route: (BuildContext context) => Win_Manager_View(),
         Win_Functions_Test_Page.route: (BuildContext context) => Win_Functions_Test_Page(),
+        Win_Order.route: (BuildContext context) => Win_Order(),
       },
       initialRoute:  Win_Login.route,
     );

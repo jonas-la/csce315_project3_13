@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../Win_Manager_View.dart';
+import '../Order/Win_Order.dart';
+
 
 class Win_Login extends StatefulWidget {
   static const String route = '/login';
@@ -65,7 +67,13 @@ class _Win_LoginState extends State<Win_Login> {
           ),),
             ElevatedButton(onPressed: (){
               _login(context);
-            }, child: const Text("Login"))
+            }, child: const Text("Login")),
+            Padding(
+              padding: const EdgeInsets.only(top: 100),
+              child: ElevatedButton(onPressed: () {
+                Navigator.pushNamed(context, Win_Order.route);
+              }, child: Text('Order')),
+            )
           ],
         ),
       ),
