@@ -62,6 +62,22 @@ exports.getOneEmployeeByIdTest = functions.https.onCall(async (data, context) =>
 });
 
 
+// for getting the user's info after logging in
+exports.getEmployeeByUID = functions.https.onCall(async (data, context) => {
+
+    const {employee_uid} = data;
+
+    await client.connect()
+
+    const res = await client.query("SELECT * FROM employees WHERE employee_uid ='" + employee_uid+"'")
+
+    client.end()
+
+    return res.rows
+
+});
+
+
 
 
 

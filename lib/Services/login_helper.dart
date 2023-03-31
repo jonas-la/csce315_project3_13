@@ -1,9 +1,61 @@
+import 'package:csce315_project3_13/Models/employee.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class login_helper{
   // final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<bool> signInWithEmailAndPassword(String user_email, String user_password) async {
+  Future<void> modify_results(String employee_uid) async {
+      // final my_results = await get_employee_by_UID(employee_uid);
+      print("got employee");
+  }
+
+  Future<void> test_id() async {
+    final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('getOneEmployeeByIdTest');
+
+// Call the function with the employee UID as input
+    final results = await callable.call(<String, dynamic>{
+      'employee_id': 2,
+    });
+
+// Extract the name of the employee from the data returned by the function
+    List<dynamic> employeeData = results.data;
+    String employeeName = employeeData[0]['employee_name'];
+    print(employeeName);
+  }
+
+  Future<void> test_uid() async {
+    final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('getEmployeeByUID');
+
+// Call the function with the employee UID as input
+    final results = await callable.call(<String, dynamic>{
+      'employee_uid': 'wQI6aAGC4DYDHoNGXRNORnSnasb2',
+    });
+
+// Extract the name of the employee from the data returned by the function
+    List<dynamic> employeeData = results.data;
+    String employeeName = employeeData[0]['employee_name'];
+    print(employeeName);
+  }
+
+  Future<void> get_employee_by_UID(String employee_uid) async {
+    final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('getEmployeeByUID');
+
+// Call the function with the employee UID as input
+    final results = await callable.call(<String, dynamic>{
+      'employee_uid': 'wQI6aAGC4DYDHoNGXRNORnSnasb2',
+    });
+
+// Extract the name of the employee from the data returned by the function
+    List<dynamic> employeeData = results.data;
+    String employeeName = employeeData[0]['employee_name'];
+    print(employeeName);
+
+    // employee got_employee = employee(id: results.data[0], name: name, email: email, role: role, uid: uid, hourly_rate: hourly_rate)
+  }
+
+
+  Future<bool> sign_in_email_password(String user_email, String user_password) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: user_email,

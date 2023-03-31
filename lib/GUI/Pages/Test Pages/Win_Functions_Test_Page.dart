@@ -58,6 +58,19 @@ class _Win_Functions_Test_Page_StartState extends State<Win_Functions_Test_Page>
             ElevatedButton(onPressed: (){
               login_helper_instance.sign_out();
             }, child: const Text("Sign out")),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(onPressed: (){
+              login_helper_instance.test_uid();
+            }, child: const Text("Test UID")),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(onPressed: (){
+              login_helper_instance.get_employee_by_UID("wQI6aAGC4DYDHoNGXRNORnSnasb2");
+            }, child: const Text("Get employee by uid")),
+
 
 
 
