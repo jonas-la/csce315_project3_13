@@ -48,12 +48,12 @@ class login_helper{
       print("Not logged in");
       return "";
     }
-
-
   }
 
 
   Future<void> sign_out() async {
     await FirebaseAuth.instance.signOut();
   }
+
+
 }
