@@ -68,7 +68,7 @@ class _Win_Functions_Test_Page_StartState extends State<Win_Functions_Test_Page>
               height: 20,
             ),
             ElevatedButton(onPressed: (){
-              login_helper_instance.get_employee_by_UID("wQI6aAGC4DYDHoNGXRNORnSnasb2");
+              login_helper_instance.get_employee_by_UID('wQI6aAGC4DYDHoNGXRNORnSnasb2');
             }, child: const Text("Get employee by uid")),
 
 
