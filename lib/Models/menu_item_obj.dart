@@ -1,3 +1,5 @@
+part of models_library;
+
 class menu_item_obj
 {
   // Variables match SQL table menu_items
