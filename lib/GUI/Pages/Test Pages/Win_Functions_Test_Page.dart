@@ -1,4 +1,6 @@
+import 'package:csce315_project3_13/Services/menu_item_helper.dart';
 import 'package:flutter/material.dart';
+import '../../../Models/menu_item_obj.dart';
 import '../../../Services/testing_cloud_functions.dart';
 import '../Win_Manager_View.dart';
 
@@ -13,7 +15,7 @@ class Win_Functions_Test_Page extends StatefulWidget {
 class _Win_Functions_Test_Page_StartState extends State<Win_Functions_Test_Page> {
 
   testing_cloud_functions cloud_functions_tester = testing_cloud_functions();
-
+  menu_item_helper menu_cloud_tester = menu_item_helper();
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,10 @@ class _Win_Functions_Test_Page_StartState extends State<Win_Functions_Test_Page>
             ElevatedButton(onPressed: (){
               cloud_functions_tester.getEmployeeByID(2);
             }, child: const Text("Test Firebase Function with parameter")),
-
+            ElevatedButton(onPressed: (){
+              menu_item_obj menu_item = menu_item_obj(500, "dart test item", 50.50, 100, "dart item");
+              menu_cloud_tester.add_menu_item(menu_item);
+            }, child: const Text("Add menu item to database")),
 
 
             // t

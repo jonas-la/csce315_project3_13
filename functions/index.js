@@ -4,14 +4,7 @@ const functions = require('firebase-functions');
 //This imports a postgres library for JavaScript
 const { Client } = require('pg');
 
-//This creates an object we can use to connect to our database
-const client = new Client({
-      host: 'csce-315-db.engr.tamu.edu',
-      user: 'csce315331_team_13_master',
-      password: 'Lucky_13',
-      database: 'csce315331_team_13',
-      port: 5432,
-    });
+
 
 // This is a function without parameters, it's very similar to a parameterized function
 // If you want to create a new function you should replace getEmployeesTest with the function name
@@ -26,6 +19,13 @@ const client = new Client({
 // also we likely won't use context
 exports.getEmployeesTest = functions.https.onCall(async (data, context) => {
 
+    const client = new Client({
+          host: 'csce-315-db.engr.tamu.edu',
+          user: 'csce315331_team_13_master',
+          password: 'Lucky_13',
+          database: 'csce315331_team_13',
+          port: 5432,
+    });
 // await makes the rest of the function wait until this line completes
 // this connects to our database
     await client.connect()
@@ -47,6 +47,13 @@ exports.getEmployeesTest = functions.https.onCall(async (data, context) => {
 // this is a function with a parameter
 exports.getOneEmployeeByIdTest = functions.https.onCall(async (data, context) => {
 
+    const client = new Client({
+          host: 'csce-315-db.engr.tamu.edu',
+          user: 'csce315331_team_13_master',
+          password: 'Lucky_13',
+          database: 'csce315331_team_13',
+          port: 5432,
+    });
 //  this is makes the function have the parameter employee_id
     const {employee_id} = data;
 
@@ -63,14 +70,23 @@ exports.getOneEmployeeByIdTest = functions.https.onCall(async (data, context) =>
 
 exports.addMenuItem = functions.https.onCall(async (data, context) => {
 
-    const {values} = data;
+    const client = new Client({
+          host: 'csce-315-db.engr.tamu.edu',
+          user: 'csce315331_team_13_master',
+          password: 'Lucky_13',
+          database: 'csce315331_team_13',
+          port: 5432,
+    });
 
     await client.connect()
 
-    const res = await client.query('INSERT INTO menu_items (menu_item_id, menu_item, item_price, amount_in_stock, type) VALUES(' + values + ')')
-    client.end();
+    const {values} = data
 
-    return null;
+    const res = await client.query('INSERT INTO menu_items (menu_item_id, menu_item, item_price, amount_in_stock, type) VALUES(' + values + ')')
+
+    client.end()
+
+    return "Added menu item to database"
 });
 
 
