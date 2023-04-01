@@ -16,17 +16,22 @@ class login_helper{
   }
 
   Future<void> test_id() async {
-    final HttpsCallable callable = my_functions.httpsCallable('getOneEmployeeByIdTest');
+    try{
+      final HttpsCallable callable = my_functions.httpsCallable('getOneEmployeeByIdTest');
 
 // Call the function with the employee UID as input
-    final results = await callable.call(<String, dynamic>{
-      'employee_id': 2,
-    });
+      final results = await callable.call(<String, dynamic>{
+        'employee_id': 2,
+      });
 
 // Extract the name of the employee from the data returned by the function
-    List<dynamic> employeeData = results.data;
-    String employeeName = employeeData[0]['employee_name'];
-    print(employeeName);
+      List<dynamic> employeeData = results.data;
+      String employeeName = employeeData[0]['employee_name'];
+      print(employeeName);
+    }catch(e){
+      print(e);
+    }
+
   }
 
   Future<void> test_uid() async {
