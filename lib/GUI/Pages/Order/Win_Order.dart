@@ -30,6 +30,21 @@ class Win_Order_State extends State<Win_Order> {
 
   final List<Map<String, dynamic>> _tableData = [];
 
+  void _addRow() {
+    final name = 'An Item';
+    final price = double.tryParse('2.99') ?? 0.0;
+    final index = _tableData.length + 1;
+    final newRow = {
+      'index': index,
+      'name': name,
+      'price': price,
+    };
+    setState(() {
+      _tableData.add(newRow);
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width / 2;
@@ -75,10 +90,8 @@ class Win_Order_State extends State<Win_Order> {
                             IconButton(
                               icon: Icon(Icons.delete),
                               onPressed: () {
-                                final deletedIndex = _tableData[rowIndex]['index'];
                                 setState(() {
                                   _tableData.removeAt(rowIndex);
-                                  print('Deleted row with index: $deletedIndex');
                                 });
                               },
                             ),
@@ -87,7 +100,7 @@ class Win_Order_State extends State<Win_Order> {
                             IconButton(
                               icon: Icon(Icons.edit_attributes_sharp),
                               onPressed: () {
-                                print('Edit item')
+                                print('Edit item');
                               },
                             ),
                           ),
@@ -196,6 +209,7 @@ class Win_Order_State extends State<Win_Order> {
                                         // Todo: create custom button class
                                             .map((name) => ElevatedButton(
                                           onPressed: () {
+                                            _addRow();
                                             print(name);
                                           },
                                           child: Text(
@@ -290,108 +304,6 @@ class Win_Order_State extends State<Win_Order> {
             ),
         ],
       )
-    );
-  }
-}
-
-
-class TableExample extends StatefulWidget {
-  @override
-  _TableExampleState createState() => _TableExampleState();
-}
-
-class _TableExampleState extends State<TableExample> {
-  final _nameController = TextEditingController();
-  final _priceController = TextEditingController();
-  final _indexController = TextEditingController();
-  final List<Map<String, dynamic>> _tableData = [];
-
-  void _addRow() {
-    final name = _nameController.text;
-    final price = double.tryParse(_priceController.text) ?? 0.0;
-    final index = int.tryParse(_indexController.text) ?? 0;
-    final newRow = {
-      'index': index,
-      'name': name,
-      'price': price,
-    };
-    setState(() {
-      _tableData.add(newRow);
-    });
-  }
-
-  void _deleteRow(int rowIndex) {
-    final deletedIndex = _tableData[rowIndex]['index'];
-    setState(() {
-      _tableData.removeAt(rowIndex);
-      print('Deleted row with index: $deletedIndex');
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Index'),
-              TextField(
-                controller: _indexController,
-                keyboardType: TextInputType.number,
-              ),
-              SizedBox(height: 16.0),
-              Text('Name'),
-              TextField(
-                controller: _nameController,
-              ),
-              SizedBox(height: 16.0),
-              Text('Price'),
-              TextField(
-                controller: _priceController,
-                keyboardType: TextInputType.number,
-              ),
-              SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: _addRow,
-                child: Text('Add Row'),
-              ),
-            ],
-          ),
-        ),
-        DataTable(
-          columns: [
-            DataColumn(label: Text('Index')),
-            DataColumn(label: Text('Name')),
-            DataColumn(label: Text('Price')),
-            DataColumn(label: Text('Delete')),
-            DataColumn(label: Text('Print')),
-          ],
-          rows: _tableData.map((rowData) {
-            final rowIndex = _tableData.indexOf(rowData);
-            return DataRow(cells: [
-              DataCell(Text('${rowData['index']}')),
-              DataCell(Text('${rowData['name']}')),
-              DataCell(Text('${rowData['price']}')),
-              DataCell(
-                IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () => _deleteRow(rowIndex),
-                ),
-              ),
-              DataCell(
-                IconButton(
-                  icon: Icon(Icons.print),
-                  onPressed: () => print(rowData['index']),
-                ),
-              ),
-            ]);
-          }).toList(),
-        ),
-      ],
     );
   }
 }
