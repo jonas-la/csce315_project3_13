@@ -54,11 +54,23 @@ exports.getOneEmployeeByIdTest = functions.https.onCall(async (data, context) =>
 
 //  you can simply add variables to the query
     const res = await client.query('SELECT * FROM employees WHERE employee_id =' + employee_id)
-
     client.end()
 
     return res.rows
 
+});
+
+
+exports.addMenuItem = functions.https.onCall(async (data, context) => {
+
+    const {values} = data;
+
+    await client.connect()
+
+    const res = await client.query('INSERT INTO menu_items (menu_item_id, menu_item, item_price, amount_in_stock, type) VALUES(' + values + ')')
+    client.end();
+
+    return null;
 });
 
 
