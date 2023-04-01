@@ -13,22 +13,25 @@ class Win_Login extends StatefulWidget {
 
 class _Win_LoginState extends State<Win_Login> {
 
-  String page_name = "Login Window";
+  String _page_name = "Login Window";
+  bool _show_password = false;
 
   late TextEditingController _username_controller;
   late TextEditingController _password_controller;
 
-  login_helper login_helper_instance = login_helper();
+  login_helper _login_helper_instance = login_helper();
 
-  void _login(BuildContext context) async {
-    bool sign_in_successful = await login_helper_instance.sign_in_email_password(_username_controller.text, _password_controller.text);
-    if(sign_in_successful){
-      Navigator.pushReplacementNamed(context, Win_Functions_Test_Page.route);
-    }else{
-      print("Failed login");
-    }
-
+  void _switch_show_password(){
+    setState(() {
+      _show_password = !_show_password;
+    });
   }
+
+  void _login(BuildContext context){
+    _login_helper_instance.login(context: context, username: _username_controller.text, password: _password_controller.text);
+  }
+
+
 
   @override
   void initState() {
@@ -50,36 +53,67 @@ class _Win_LoginState extends State<Win_Login> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(page_name),
+        title: Text(_page_name),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'Enter your username and password:',
-            ),
-            TextField(
-              controller: _username_controller,
-              obscureText: false,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Username',
-              ),),
-        TextField(
-          controller: _password_controller,
-          onSubmitted: (String pass_string){
-            _login(context);
-          },
-          obscureText: true,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            labelText: 'Password',
-          ),),
-            ElevatedButton(onPressed: (){
-              _login(context);
-            }, child: const Text("Login"))
-          ],
+        child: Container(
+          width: MediaQuery.of(context).size.width/2,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+
+              const Padding(
+                padding: EdgeInsets.all(15.0),
+                child: Text(
+                  'Enter your email and password:',
+                  style: TextStyle(
+                    fontSize: 30,
+                  ),
+                ),
+              ),
+
+              TextField(
+                controller: _username_controller,
+                obscureText: false,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Email',
+                ),),
+
+              TextField(
+                 controller: _password_controller,
+                 onSubmitted: (String pass_string){
+                   _login(context);
+                 },
+                 obscureText: !_show_password,
+                 decoration: const InputDecoration(
+                   border: OutlineInputBorder(),
+                   labelText: 'Password',
+                 ),),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Checkbox(
+                      value: _show_password,
+                      onChanged: (changed_value){
+                    _switch_show_password();
+                  }),
+
+                  Text("Show password"),
+                ],
+              ),
+
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(onPressed: (){
+                  _login(context);
+                }, child: const Text("Login")),
+              ),
+
+
+            ],
+          ),
         ),
       ),
       // This trailing comma makes auto-formatting nicer for build methods.

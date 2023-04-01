@@ -17,26 +17,8 @@ class _Win_Functions_Test_Page_StartState extends State<Win_Functions_Test_Page>
   testing_cloud_functions cloud_functions_tester = testing_cloud_functions();
 
   login_helper login_helper_instance = login_helper();
-  final HttpsCallable getEmployeeByUID = FirebaseFunctions.instance.httpsCallable('getEmployeeByUID');
 
-
-    Future<List<dynamic>> fetchEmployeeByUID(String employeeUID) async {
-      try {
-        final result = await getEmployeeByUID.call({
-          'employee_uid': employeeUID,
-        });
-        return List<dynamic>.from(result.data);
-      } on FirebaseFunctionsException catch (e) {
-        print('getEmployeeByUID callable failed with code: ${e.code} message: ${e.message}');
-        return List<dynamic>.empty();
-      } catch (e) {
-        print('getEmployeeByUID callable failed with unknown error: $e');
-        return List<dynamic>.empty();
-      }
-    }
-
-
-
+  
   @override
   Widget build(BuildContext context) {
 
@@ -80,21 +62,7 @@ class _Win_Functions_Test_Page_StartState extends State<Win_Functions_Test_Page>
             const SizedBox(
               height: 20,
             ),
-            ElevatedButton(onPressed: (){
-              fetchEmployeeByUID('wQI6aAGC4DYDHoNGXRNORnSnasb2');
-            }, child: const Text("Test UID")),
-            const SizedBox(
-              height: 20,
-            ),
-            ElevatedButton(onPressed: (){
-              login_helper_instance.test_id();
-            }, child: const Text("Test ID")),
-            const SizedBox(
-              height: 20,
-            ),
-            ElevatedButton(onPressed: (){
-              login_helper_instance.get_employee_by_UID('wQI6aAGC4DYDHoNGXRNORnSnasb2');
-            }, child: const Text("Get employee by uid")),
+
 
 
 

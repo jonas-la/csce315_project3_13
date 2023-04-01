@@ -1,4 +1,5 @@
 import 'package:csce315_project3_13/GUI/Components/ExampleButton.dart';
+import 'package:csce315_project3_13/GUI/Pages/Login/Win_Login.dart';
 import 'package:flutter/material.dart';
 
 class Win_Manager_View extends StatefulWidget {
@@ -27,7 +28,7 @@ class _Win_Manager_ViewState extends State<Win_Manager_View> {
             ExampleButton(
                 onTap: (){
               print("Logging out");
-              Navigator.pop(context);
+              Navigator.pushReplacementNamed(context, Win_Login.route);
             },
             buttonName: "Log out"
             ),
