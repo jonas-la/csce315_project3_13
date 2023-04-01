@@ -1,6 +1,7 @@
 import 'package:csce315_project3_13/Constants/constants.dart';
 import 'package:csce315_project3_13/GUI/Pages/Test%20Pages/Win_Functions_Test_Page.dart';
 import 'package:csce315_project3_13/GUI/Pages/Win_Manager_View.dart';
+import 'package:csce315_project3_13/Services/Test_Page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -26,8 +27,10 @@ class MyApp extends StatelessWidget {
         Win_Login.route: (BuildContext context) => Win_Login(),
         Win_Manager_View.route: (BuildContext context) => Win_Manager_View(),
         Win_Functions_Test_Page.route: (BuildContext context) => Win_Functions_Test_Page(),
+        Test_Page.route: (BuildContext context) => Test_Page(),
+
       },
-      initialRoute:  Win_Login.route,
+      initialRoute:  Test_Page.route,
     );
   }
 }
