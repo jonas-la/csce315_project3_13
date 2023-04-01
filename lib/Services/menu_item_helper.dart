@@ -1,4 +1,4 @@
-import '../Helpers/menu_item_obj.dart';
+import '../Models/menu_item_obj.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
 class menu_item_helper
