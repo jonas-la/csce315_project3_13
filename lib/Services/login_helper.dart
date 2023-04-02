@@ -220,6 +220,85 @@ class login_helper{
     await FirebaseAuth.instance.signOut();
   }
 
+  Future<employee> get_employee_by_UID_hardcoded(String employee_uid) async {
+    //TODO temporarily rely on this
+    // Temporary function to get the hardcoded value
+
+    Map<String, employee> employee_hash_map = {
+      'RPhPjO2LQ2MMTHMwZS7N3JWFOAx2': employee(
+        id: 1,
+        name: 'Maharshi',
+        email: '',
+        role: 'Manager',
+        uid: 'RPhPjO2LQ2MMTHMwZS7N3JWFOAx2',
+        hourly_rate: 25.87,
+      ),
+      'wQI6aAGC4DYDHoNGXRNORnSnasb2': employee(
+        id: 2,
+        name: 'Jonas',
+        email: '',
+        role: 'Server',
+        uid: 'wQI6aAGC4DYDHoNGXRNORnSnasb2',
+        hourly_rate: 14.99,
+      ),
+      'FjOPjWpPRNYl2W6XqFymugBlKcs2': employee(
+        id: 3,
+        name: 'Tyler',
+        email: '',
+        role: 'Server',
+        uid: 'FjOPjWpPRNYl2W6XqFymugBlKcs2',
+        hourly_rate: 14.99,
+      ),
+      'kvrLmJjlxDgupk3IS6fgpO6KRM33': employee(
+        id: 4,
+        name: 'Freddy',
+        email: '',
+        role: 'Server',
+        uid: 'kvrLmJjlxDgupk3IS6fgpO6KRM33',
+        hourly_rate: 14.99,
+      ),
+      '2XkBeUBFQ9TjEYr2rOjwaqJkGFm2': employee(
+        id: 5,
+        name: 'Seth',
+        email: '',
+        role: 'Manager',
+        uid: '2XkBeUBFQ9TjEYr2rOjwaqJkGFm2',
+        hourly_rate: 25.87,
+      ),
+    };
+
+    employee current_employee = employee(id: 0, name: "", email: "", role: "Customer", uid: employee_uid, hourly_rate: 0.0);
+
+    if(employee_hash_map[employee_uid] != null){
+      current_employee = employee_hash_map[employee_uid] as employee;
+    }
+
+    String employee_email = await get_firebase_email();
+
+    print(employee_email);
+
+    current_employee.email = employee_email;
+
+    return current_employee;
+
+
+
+    // print(employee_id);
+      // print(employee_name);
+      // print(employee_role);
+      // print(employee_uid);
+      // print(employee_hourly_rate);
+
+
+      // int employee_id = int.parse(employee_id_string);
+      // double employee_hourly_rate = double.parse(employee_hourly_rate_string);
+
+      // return employee(id: employee_id, name: employee_name, email: employee_email, role: employee_role, uid: employee_uid, hourly_rate: employee_hourly_rate);
+
+
+  }
+
+
 
 
 //  These are functions to revisit once I figure out what is going on with firebase cloud functios
