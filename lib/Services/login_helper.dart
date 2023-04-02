@@ -41,11 +41,6 @@ class login_helper{
     }
   }
 
-  void navigate_to_landing({required BuildContext context}){
-    //TODO add functionality to navigate to correct page for user
-    Navigator.pushReplacementNamed(context, Win_Manager_View.route);
-  }
-
 
   Future<bool> sign_in_email_password({required String user_email, required String user_password}) async {
     //signs the user in with email and password
@@ -63,11 +58,48 @@ class login_helper{
       } else if (e.code == 'wrong-password') {
         print('Wrong password provided for that user.');
       }
-
-
-
       return false;
     }
+  }
+
+  Future<void> navigate_to_landing({required BuildContext context}) async {
+    //TODO add functionality to navigate to correct page for user
+
+    String user_uid = await get_firebase_uid();
+
+    employee current_employee = await get_employee_by_uid(user_uid: user_uid);
+
+    print("Current employee's role = ");
+    print(current_employee.role);
+
+    if(current_employee.role == "Manager"){
+    //  TODO Add navigation to manager page
+
+    }else if(current_employee.role == "Server"){
+    //  TODO Add navigation to server page
+
+    }else if(current_employee.role == "Customer"){
+    //  TODO Add navigation to Customer page
+
+    }else{
+      // TODO Handle the edge case
+      print("!!! The role was not one of the options");
+
+    }
+
+    // TODO remove when function complete
+    Navigator.pushReplacementNamed(context, Win_Manager_View.route);
+  }
+
+
+  Future<employee> get_employee_by_uid({required String user_uid}) async {
+    //TODO get employee from psql database
+
+    employee employee_to_return = employee(id: 0, name: "", email: "", role: "", uid: "", hourly_rate: 0.0);
+
+    employee_to_return = await get_employee_by_UID_database(user_uid);
+
+    return employee_to_return;
   }
 
 
@@ -166,6 +198,22 @@ class login_helper{
     }
   }
 
+  Future<String> get_firebase_email() async {
+    // gets the UID of the signed in user from firebase users
+
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      print("Signed in and email is:");
+      print(user.email);
+      String user_email = "notemail@gmail.com";
+      user_email = (user.email).toString();
+      return user_email;
+    }else{
+      print("Not logged in");
+      return "";
+    }
+  }
+
 
   Future<void> sign_out() async {
     //signs out the user
@@ -176,6 +224,52 @@ class login_helper{
 
 //  These are functions to revisit once I figure out what is going on with firebase cloud functios
 // TODO figure out how to query for an employee with firebase functions
+
+  Future<employee> get_employee_by_UID_database(String employee_uid) async {
+    //TODO get this working
+    //It currently has an internal firebase error each time I call it
+
+    final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('getEmployeeByUID');
+
+    try{
+      // Call the function with the employee UID as input
+      final results = await callable.call(<String, dynamic>{
+        'employee_uid': employee_uid,
+      });
+
+      // Extract the name of the employee from the data returned by the function
+      List<dynamic> employeeData = results.data;
+      int employee_id = employeeData[0]['employee_id'];
+      String employee_name = employeeData[0]['employee_name'];
+      String employee_role = employeeData[0]['employee_role'];
+      double employee_hourly_rate = employeeData[0]['hourly_rate'];
+
+      print(employee_id);
+      print(employee_name);
+      print(employee_role);
+      print(employee_uid);
+      print(employee_hourly_rate);
+
+      String employee_email = await get_firebase_email();
+
+      print(employee_email);
+
+      // int employee_id = int.parse(employee_id_string);
+      // double employee_hourly_rate = double.parse(employee_hourly_rate_string);
+
+      return employee(id: employee_id, name: employee_name, email: employee_email, role: employee_role, uid: employee_uid, hourly_rate: employee_hourly_rate);
+
+    }catch(e){
+      print("Could not get employee by uid from database");
+      print("error was");
+      print(e);
+
+
+      return employee(id: 0, name: "", email: "", role: "Customer", uid: employee_uid, hourly_rate: 0.0);
+    }
+
+    }
+
 
 //   Future<void> modify_results(String employee_uid) async {
 //     // final my_results = await get_employee_by_UID(employee_uid);
@@ -215,19 +309,5 @@ class login_helper{
 //     print(employeeName);
 //   }
 //
-//   Future<void> get_employee_by_UID(String employee_uid) async {
-//     final HttpsCallable callable = my_functions.httpsCallable('getEmployeeByUID');
-//
-// // Call the function with the employee UID as input
-//     final results = await callable.call(<String, dynamic>{
-//       'employee_uid': 'wQI6aAGC4DYDHoNGXRNORnSnasb2',
-//     });
-//
-// // Extract the name of the employee from the data returned by the function
-//     List<dynamic> employeeData = results.data;
-//     String employeeName = employeeData[0]['employee_name'];
-//     print(employeeName);
-//
-//     // employee got_employee = employee(id: results.data[0], name: name, email: email, role: role, uid: uid, hourly_rate: hourly_rate)
-//   }
+
 }
