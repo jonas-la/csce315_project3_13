@@ -30,6 +30,8 @@ class Win_Order_State extends State<Win_Order> {
   int _activeMenu2 = 0;
 
   double total_cost = 0.00;
+  TextEditingController customer = TextEditingController();
+  String curr_customer = 'None';
 
   final List<Map<String, dynamic>> _tableData = [];
 
@@ -45,7 +47,37 @@ class Win_Order_State extends State<Win_Order> {
     });
   }
 
-
+  void customerInfo() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Customer Information'),
+          content: TextFormField(
+            controller: customer,
+            decoration: InputDecoration(hintText: 'Type here...'),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('CANCEL'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                setState(() {
+                  curr_customer = customer.text;
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width / 2;
@@ -123,10 +155,19 @@ class Win_Order_State extends State<Win_Order> {
                         Expanded(
                             child: TextButton(
                               // todo handle customer stuff
-                              onPressed: () {},
-                              child: Icon(
-                                Icons.person,
-                                size: 100,
+                              onPressed: () {
+                                customerInfo();
+                              },
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.person,
+                                    size: 75,
+                                  ),
+                                  Text(
+                                    '$curr_customer',
+                                  )
+                                ],
                               ),
                             ),
                         ),
@@ -268,6 +309,7 @@ class Win_Order_State extends State<Win_Order> {
                                                       // Todo: get price of item
                                                       5.59.toString(),
                                                       style: TextStyle(
+                                                        color: Colors.white30,
                                                         fontSize: 15,
                                                       ),
                                                       textAlign: TextAlign.end,
@@ -321,6 +363,7 @@ class Win_Order_State extends State<Win_Order> {
                                                   // Todo: get price of item
                                                   3.99.toString(),
                                                   style: TextStyle(
+                                                    color: Colors.white30,
                                                     fontSize: 15,
                                                   ),
                                                   textAlign: TextAlign.end,
