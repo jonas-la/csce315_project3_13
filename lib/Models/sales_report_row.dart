@@ -1,3 +1,5 @@
+part of models_library;
+
 class sales_report_row
 {
   // All of the variables that will be displayed on the table that comes up when you run a sales report

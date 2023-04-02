@@ -1,3 +1,5 @@
+part of models_library;
+
 class order_obj
 {
   // All variables match the order_history table from the SQL database

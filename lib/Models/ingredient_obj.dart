@@ -1,3 +1,5 @@
+part of models_library;
+
 class ingredient_obj
 {
   // All variables match from the ingredients_table in the database

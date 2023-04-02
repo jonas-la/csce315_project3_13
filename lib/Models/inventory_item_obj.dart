@@ -1,3 +1,5 @@
+part of models_library;
+
 class inventory_item_obj
 {
   // All variables match the inventory SQL table
