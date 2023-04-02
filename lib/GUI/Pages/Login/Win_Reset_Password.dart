@@ -46,17 +46,14 @@ class _Win_Reset_PasswordState extends State<Win_Reset_Password> {
       appBar: AppBar(
         title: Text(_page_name),
         actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
+
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(onPressed: (){
                   Navigator.pushReplacementNamed(context, Win_Login.route);
                 }, child: const Text("Back")),
               ),
-            ],
-          ),
+
         ],
       ),
       body: Center(
