@@ -107,6 +107,7 @@ exports.getLastIngredientsTableID = functions.https.onCall(async (data, context)
 
 })
 
+// Adds a menu item to the menu_items table
 exports.addMenuItem = functions.https.onCall(async (data, context) => {
 
     const client = new Client({
@@ -128,6 +129,7 @@ exports.addMenuItem = functions.https.onCall(async (data, context) => {
     return "Added menu item to database"
 });
 
+// Adds an ingredient row to the ingredients_table table
 exports.insertIntoIngredientsTable = functions.https.onCall(async (data, context) => {
     const client = new Client({
           host: 'csce-315-db.engr.tamu.edu',
@@ -148,6 +150,48 @@ exports.insertIntoIngredientsTable = functions.https.onCall(async (data, context
     return "Added ingredient to ingredients_table"
 });
 
+// Takes a row_id and a new_amount, updates the ingredients_table at row_id and changes the quantity to new_amount
+exports.updateIngredientsTableRow = functions.https.onCall(async (data, context) => {
+    const client = new Client({
+          host: 'csce-315-db.engr.tamu.edu',
+          user: 'csce315331_team_13_master',
+          password: 'Lucky_13',
+          database: 'csce315331_team_13',
+          port: 5432,
+    });
+
+    await client.connect()
+
+    const {row_id} = data
+    const {new_amount} = data
+
+    const res = await client.query('UPDATE ingredients_table SET ingredient_amount=' + new_amount + ' WHERE row_id=' + row_id)
+
+    client.end()
+
+    return "Successfully updated ingredients_table row"
+})
+
+// Deletes an individual row from the ingredients_table
+exports.deleteIngredientsTableRow = functions.https.onCall(async (data, context) => {
+    const client = new Client({
+          host: 'csce-315-db.engr.tamu.edu',
+          user: 'csce315331_team_13_master',
+          password: 'Lucky_13',
+          database: 'csce315331_team_13',
+          port: 5432,
+    });
+
+    await client.connect()
+
+    const {row_id} = data
+
+    const res = await client.query('DELETE FROM ingredients_table WHERE row_id=' + row_id)
+
+    client.end()
+
+    return "Successfully deleted ingredients_table row"
+})
 
 
 

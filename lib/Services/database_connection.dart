@@ -34,7 +34,6 @@ class database_connection{
     HttpsCallable getItemID = FirebaseFunctions.instance.httpsCallable('getLastMenuItemID');
     HttpsCallable getIngrID = FirebaseFunctions.instance.httpsCallable('getLastIngredientsTableID');
     HttpsCallable addMenuItem = FirebaseFunctions.instance.httpsCallable('addMenuItem');
-    HttpsCallable addIngredient = FirebaseFunctions.instance.httpsCallable('insertIntoIngredientsTable');
 
     final itemIDQuery = await getItemID();
     List<dynamic> data = itemIDQuery.data;
@@ -60,7 +59,7 @@ class database_connection{
           for(String ingredient in new_item.ingredients) {
             last_ingr_id += 1;
             ingredient_obj ingr_obj = ingredient_obj(last_ingr_id, new_item.menu_item, ingredient, i);
-            await addIngredient.call({'values': ingr_obj.get_values()});
+            add_ingredient_row(ingr_obj);
           }
         }
         else if(i == 2)
@@ -71,7 +70,7 @@ class database_connection{
           for(String ingredient in new_item.ingredients) {
             last_ingr_id += 1;
             ingredient_obj ingr_obj = ingredient_obj(last_ingr_id, new_item.menu_item, ingredient, i);
-            await addIngredient.call({'values': ingr_obj.get_values()});
+            add_ingredient_row(ingr_obj);
           }
         }
         else
@@ -82,7 +81,7 @@ class database_connection{
           for(String ingredient in new_item.ingredients) {
             last_ingr_id += 1;
             ingredient_obj ingr_obj = ingredient_obj(last_ingr_id, new_item.menu_item, ingredient, i);
-            await addIngredient.call({'values': ingr_obj.get_values()});
+            add_ingredient_row(ingr_obj);
           }
         }
         String values = new_item.get_values();
@@ -96,6 +95,30 @@ class database_connection{
       await addMenuItem.call({'values':  values});
     }
 
+  }
+
+  // Simply takes in an ingredient_obj which mirrors a row from the ingredients_table table
+  //    and adds it to the database
+  Future<void> add_ingredient_row(ingredient_obj ingr_obj) async
+  {
+    HttpsCallable addIngredient = FirebaseFunctions.instance.httpsCallable('insertIntoIngredientsTable');
+    await addIngredient.call({'values': ingr_obj.get_values()});
+  }
+
+  Future<void> edit_ingredient_row(int row_id, int new_amount) async
+  {
+    HttpsCallable editIngredient = FirebaseFunctions.instance.httpsCallable('updateIngredientsTableRow');
+    await editIngredient.call({
+      'row_id': row_id,
+      'new_amount': new_amount
+    });
+  }
+
+  // Deletes a single row from the ingredients_table table specified by row_id
+  Future<void> delete_ingredient_row(int row_id) async
+  {
+    HttpsCallable deleteIngredient = FirebaseFunctions.instance.httpsCallable('deleteIngredientsTableRow');
+    await deleteIngredient.call({'row_id': row_id});
   }
 
 }
