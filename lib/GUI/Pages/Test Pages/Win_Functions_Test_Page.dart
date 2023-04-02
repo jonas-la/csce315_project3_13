@@ -1,5 +1,7 @@
+import 'package:csce315_project3_13/Services/database_connection.dart';
 import 'package:flutter/material.dart';
-import '../../../Services/testing_cloud_functions.dart';
+import '../../../Models/models_library.dart';
+import '../../../Services/database_connection.dart';
 import '../Win_Manager_View.dart';
 
 class Win_Functions_Test_Page extends StatefulWidget {
@@ -12,8 +14,7 @@ class Win_Functions_Test_Page extends StatefulWidget {
 
 class _Win_Functions_Test_Page_StartState extends State<Win_Functions_Test_Page> {
 
-  testing_cloud_functions cloud_functions_tester = testing_cloud_functions();
-
+  database_connection dbc = database_connection();
 
   @override
   Widget build(BuildContext context) {
@@ -28,16 +29,24 @@ class _Win_Functions_Test_Page_StartState extends State<Win_Functions_Test_Page>
           children: <Widget>[
 
             ElevatedButton(onPressed: (){
-              cloud_functions_tester.getEmployees();
+              dbc.getEmployees();
             }, child: const Text("Test Firebase Function")),
             const SizedBox(
               height: 20,
             ),
             ElevatedButton(onPressed: (){
-              cloud_functions_tester.getEmployeeByID(2);
+              dbc.getEmployeeByID(2);
             }, child: const Text("Test Firebase Function with parameter")),
-
-
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(onPressed: (){
+              menu_item_obj menu_item = menu_item_obj(500, "dart test item", 50.50, 100, "smoothie", ["Banana", "Strawberry", "test ingredient"]);
+              dbc.add_menu_item(menu_item);
+            }, child: const Text("Add menu item to database")),
+            const SizedBox(
+              height: 20,
+            ),
 
             // t
           ],
