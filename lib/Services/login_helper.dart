@@ -70,13 +70,46 @@ class login_helper{
     }
   }
 
-  Future<bool> reset_password({required String user_email, required BuildContext context}) async {
+
+  Future<void> create_account({ required BuildContext context, required String user_email, required String user_password}) async {
+    //signs the user in with email and password
+
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(email: user_email, password: user_password);
+      // Handle successful login
+    } on FirebaseAuthException catch (e) {
+
+      print('ERROR Could not create email');
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Account creation failed'),
+            content: const Text('Something went wrong, ensure email is valid and try again'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  // Perform some action here
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+
+
+  Future<void> reset_password({required String user_email, required BuildContext context}) async {
     //signs the user in with email and password
 
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: user_email);
       // Handle successful login
-      return true;
     } on FirebaseAuthException catch (e) {
 
         print('ERROR Could not reset email');
@@ -99,10 +132,6 @@ class login_helper{
             );
           },
         );
-
-
-
-      return false;
     }
   }
 
