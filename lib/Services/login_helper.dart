@@ -64,6 +64,44 @@ class login_helper{
         print('Wrong password provided for that user.');
       }
 
+
+
+      return false;
+    }
+  }
+
+  Future<bool> reset_password({required String user_email, required BuildContext context}) async {
+    //signs the user in with email and password
+
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: user_email);
+      // Handle successful login
+      return true;
+    } on FirebaseAuthException catch (e) {
+
+        print('ERROR Could not reset email');
+
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Reset password failed'),
+              content: const Text('Something went wrong, ensure email is correct and try again'),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('OK'),
+                  onPressed: () {
+                    // Perform some action here
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+
+
+
       return false;
     }
   }
