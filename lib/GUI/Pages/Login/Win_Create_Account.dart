@@ -34,7 +34,7 @@ class _Win_Create_AccountState extends State<Win_Create_Account> {
     //  If both passwords are the same calls the login helper function
 
       _login_helper_instance.create_account(context: context, user_email: _username_controller.text, user_password: _password_controller1.text);
-      Navigator.pushReplacementNamed(context, Win_Login.route);
+
     }else{
     //  If the passwords are different
 
