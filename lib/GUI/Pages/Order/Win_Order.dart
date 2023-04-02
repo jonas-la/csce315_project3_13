@@ -21,6 +21,7 @@ class Win_Order_State extends State<Win_Order> {
     'snacks5', 'snacks6', 'snacks7', 'snacks8', 'snacks9', 'snacks10', 'snacks11',
     'snacks12', 'snacks13', 'snacks14', 'snacks15','snacks16', 'snacks17',
     'snacks18', 'snacks19', 'snacks20'];
+  // Todo" get addon names from database
   final List<String> Addon_names = ['addon1', 'addon2', 'addon3', 'addon4',
     'addon5', 'addon6', 'addon7','addon8', 'addon9', 'addon10', 'addon11',
     'addon12', 'addon13', 'addon14', 'addon15', 'addon16', 'addon17', 'addon18',];
@@ -28,15 +29,15 @@ class Win_Order_State extends State<Win_Order> {
   int _activeMenu = 0;
   int _activeMenu2 = 0;
 
+  double total_cost = 0.00;
+
   final List<Map<String, dynamic>> _tableData = [];
 
-  void _addRow() {
-    final name = 'An Item';
+  void _addRow(String item) {
     final price = double.tryParse('2.99') ?? 0.0;
-    final index = _tableData.length + 1;
     final newRow = {
-      'index': index,
-      'name': name,
+      'index': _tableData.length + 1,
+      'name': item,
       'price': price,
     };
     setState(() {
@@ -65,50 +66,122 @@ class Win_Order_State extends State<Win_Order> {
         body: Row(
           children: <Widget>[
             Expanded(
-              child:  Container(
-                width: width,
-                alignment: Alignment.topCenter,
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    DataTable(
-                      columnSpacing: 0,
-                      columns: [
-                        DataColumn(label: Text('Index'),),
-                        DataColumn(label: Text('Name'),),
-                        DataColumn(label: Text('Price')),
-                        DataColumn(label: Text('Delete')),
-                        DataColumn(label: Text('Edit')),
-                      ],
-                      rows: _tableData.map((rowData) {
-                        final rowIndex = _tableData.indexOf(rowData);
-                        return DataRow(cells: [
-                          DataCell(Text('${rowData['index']}')),
-                          DataCell(Text('${rowData['name']}')),
-                          DataCell(Text('${rowData['price']}')),
-                          DataCell(
-                            IconButton(
-                              icon: Icon(Icons.delete),
-                              onPressed: () {
-                                setState(() {
-                                  _tableData.removeAt(rowIndex);
-                                });
-                              },
-                            ),
+              child:  Column(
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      width: width,
+                      alignment: Alignment.topCenter,
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: [
+                          DataTable(
+                            columnSpacing: 0,
+                            columns: [
+                              DataColumn(label: Text('Index'),),
+                              DataColumn(label: Text('Name'),),
+                              DataColumn(label: Text('Price')),
+                              DataColumn(label: Text('Delete')),
+                              DataColumn(label: Text('Edit')),
+                            ],
+                            rows: _tableData.map((rowData) {
+                              final rowIndex = _tableData.indexOf(rowData);
+                              return DataRow(cells: [
+                                DataCell(Text('${rowData['index']}')),
+                                DataCell(Text('${rowData['name']}')),
+                                DataCell(Text('${rowData['price']}')),
+                                DataCell(
+                                  IconButton(
+                                    icon: Icon(Icons.delete),
+                                    onPressed: () {
+                                      setState(() {
+                                        _tableData.removeAt(rowIndex);
+                                      });
+                                    },
+                                  ),
+                                ),
+                                DataCell(
+                                  IconButton(
+                                    icon: Icon(Icons.edit),
+                                    onPressed: () {
+                                      print('Edit item');
+                                    },
+                                  ),
+                                ),
+                              ]);
+                            }).toList(),
                           ),
-                          DataCell(
-                            IconButton(
-                              icon: Icon(Icons.edit_attributes_sharp),
-                              onPressed: () {
-                                print('Edit item');
-                              },
-                            ),
-                          ),
-                        ]);
-                      }).toList(),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
+                  ),
+                  SizedBox(
+                    height: 100,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(
+                            child: TextButton(
+                              // todo handle customer stuff
+                              onPressed: () {},
+                              child: Icon(
+                                Icons.person,
+                                size: 100,
+                              ),
+                            ),
+                        ),
+                        Expanded(
+                          child: Text(
+                              "Total: " + total_cost.toStringAsFixed(2),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 100,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Expanded(
+                          child: TextButton(
+                              onPressed: () {
+                                print("Logged Out");
+                                Navigator.pop(context);
+                              },
+                              child: Icon(
+                                Icons.logout,
+                              ),
+                          ),
+                        ),
+                        Expanded(
+                          child: TextButton(
+                            onPressed: () {
+                              setState(() {
+                                _tableData.clear();
+                              });
+                              print("Cancel Order");
+                            },
+                            child: Icon(
+                              Icons.cancel_outlined,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: TextButton(
+                            onPressed: () {
+                              print("Process Order");
+                            },
+                            child: Icon(
+                              Icons.monetization_on,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
              // child: Container(
              //   color: Colors.yellow,
@@ -178,10 +251,29 @@ class Win_Order_State extends State<Win_Order> {
                                                   _activeMenu2 = 1;
                                                 });
                                               },
-                                              child: Text(
-                                                  name,
-                                                style: TextStyle(fontSize: 24,),
-                                                textAlign: TextAlign.center,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Expanded(child: SizedBox(height: 5,)),
+                                                  Text(
+                                                    name,
+                                                    overflow: TextOverflow.ellipsis,
+                                                    style: TextStyle(fontSize: 30,),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                  Expanded(child: SizedBox(height: 5,)),
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: Text(
+                                                      // Todo: get price of item
+                                                      5.59.toString(),
+                                                      style: TextStyle(
+                                                        fontSize: 15,
+                                                      ),
+                                                      textAlign: TextAlign.end,
+                                                    ),
+                                                  )
+                                                ],
                                               ),
                                             )).toList(),
                                         ),
@@ -209,13 +301,32 @@ class Win_Order_State extends State<Win_Order> {
                                         // Todo: create custom button class
                                             .map((name) => ElevatedButton(
                                           onPressed: () {
-                                            _addRow();
+                                            _addRow(name);
                                             print(name);
                                           },
-                                          child: Text(
-                                            name,
-                                            style: TextStyle(fontSize: 24,),
-                                            textAlign: TextAlign.center,
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Expanded(child: SizedBox(height: 5,)),
+                                              Text(
+                                                name,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(fontSize: 30,),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              Expanded(child: SizedBox(height: 5,)),
+                                              Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  // Todo: get price of item
+                                                  3.99.toString(),
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                  ),
+                                                  textAlign: TextAlign.end,
+                                                ),
+                                              )
+                                            ],
                                           ),
                                         )).toList(),
                                       ),
@@ -285,10 +396,29 @@ class Win_Order_State extends State<Win_Order> {
                                         _activeMenu2 = 0;
                                       });
                                     },
-                                    child: Text(
-                                      name,
-                                      style: TextStyle(fontSize: 24,),
-                                      textAlign: TextAlign.center,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Expanded(child: SizedBox(height: 5,)),
+                                        Text(
+                                          name,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(fontSize: 30,),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        Expanded(child: SizedBox(height: 5,)),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            // Todo: get price of item
+                                            3.99.toString(),
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                            ),
+                                            textAlign: TextAlign.end,
+                                          ),
+                                        )
+                                      ],
                                     ),
                                   )).toList(),
                                 ),
