@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'smoothie_order.dart';
 
 class Win_Order extends StatefulWidget {
   static const String route = '/order';
@@ -26,27 +26,49 @@ class Win_Order_State extends State<Win_Order> {
     'addon5', 'addon6', 'addon7','addon8', 'addon9', 'addon10', 'addon11',
     'addon12', 'addon13', 'addon14', 'addon15', 'addon16', 'addon17', 'addon18',];
 
+  // controls visibility between smoothies and snacks menu
   int _activeMenu = 0;
+
+  //control visisbility of addons menu
   int _activeMenu2 = 0;
+
+  // controls visibility of table (order or addon)
+  int _activetable = 0;
 
   double total_cost = 0.00;
   TextEditingController customer = TextEditingController();
   String curr_customer = 'None';
+  smoothie_order curr_smoothie = smoothie_order(smoothie: 'ERROR', Size: 'ERROR');
 
-  final List<Map<String, dynamic>> _tableData = [];
+  // data displayed on table
+  final List<Map<String, dynamic>> _orderTable = [];
+  final List<Map<String, dynamic>> _addonTable = [];
 
-  void _addRow(String item) {
-    final price = double.tryParse('2.99') ?? 0.0;
+  // adds row to table
+  void _addToOrder(String item, String size, double price) {
     final newRow = {
-      'index': _tableData.length + 1,
+      'index': _orderTable.length + 1,
+      'name': item,
+      'size': size,
+      'price': price,
+    };
+    setState(() {
+      _orderTable.add(newRow);
+    });
+  }
+
+  void _addAddon(String item, double price) {
+    final newRow = {
+      'index': _addonTable.length + 1,
       'name': item,
       'price': price,
     };
     setState(() {
-      _tableData.add(newRow);
+      _addonTable.add(newRow);
     });
   }
 
+  // creates a popip screen asking for user info (currently, just the name)
   void customerInfo() {
     showDialog(
       context: context,
@@ -78,8 +100,10 @@ class Win_Order_State extends State<Win_Order> {
       },
     );
   }
+  
   @override
   Widget build(BuildContext context) {
+    // half of the width of the current screen, used to align table
     final double width = MediaQuery.of(context).size.width / 2;
     return Scaffold(
       appBar: AppBar(
@@ -100,53 +124,113 @@ class Win_Order_State extends State<Win_Order> {
             Expanded(
               child:  Column(
                 children: <Widget>[
-                  Expanded(
-                    child: Container(
-                      width: width,
-                      alignment: Alignment.topCenter,
-                      child: ListView(
-                        shrinkWrap: true,
-                        children: [
-                          DataTable(
-                            columnSpacing: 0,
-                            columns: [
-                              DataColumn(label: Text('Index'),),
-                              DataColumn(label: Text('Name'),),
-                              DataColumn(label: Text('Price')),
-                              DataColumn(label: Text('Delete')),
-                              DataColumn(label: Text('Edit')),
+                  Stack(
+                    children: [
+                      Visibility(
+                        visible: _activetable == 0,
+                        child: Container(
+                          width: width,
+                          alignment: Alignment.topCenter,
+                          child: ListView(
+                            shrinkWrap: true,
+                            children: [
+                              DataTable(
+                                columnSpacing: 0,
+                                columns: [
+                                  DataColumn(label: Text('Index'),),
+                                  DataColumn(label: Text('Name'),),
+                                  DataColumn(label: Text('Size')),
+                                  DataColumn(label: Text('Price')),
+                                  DataColumn(label: Text('Delete')),
+                                  DataColumn(label: Text('Edit')),
+                                ],
+                                rows: _orderTable.map((rowData) {
+                                  final rowIndex = _orderTable.indexOf(rowData);
+                                  return DataRow(cells: [
+                                    DataCell(Text('${rowData['index']}')),
+                                    DataCell(Text('${rowData['name']}')),
+                                    DataCell(Text('${rowData['size']}')),
+                                    DataCell(Text('${rowData['price']}')),
+                                    DataCell(
+                                      IconButton(
+                                        icon: Icon(Icons.delete),
+                                        onPressed: () {
+                                          setState(() {
+                                            _orderTable.removeAt(rowIndex);
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    // Todo: disable edit button for snacks
+                                    DataCell(
+                                      IconButton(
+                                        icon: Icon(Icons.edit),
+                                        onPressed: () {
+                                          setState(() {
+                                          // Todo: readd to order
+                                          Map<String, dynamic> item = _orderTable.elementAt(rowIndex);
+                                          curr_smoothie = smoothie_order(smoothie: item['name'], Size: item['size']);
+                                   //        _orderTable.removeAt(rowIndex);
+                                          _activetable = 1;
+                                          _activeMenu2 = 1;
+                                   //       List<String> addons = curr_smoothie.getAddons();
+                                    //     for(int i = 0; i < addons.length; ++i){
+                                            // Todo: get addon price (possibly within an Addon class)
+                                    //        _addAddon(addons.elementAt(i), 0.99);
+                                    //      }
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ]);
+                                }).toList(),
+                              ),
                             ],
-                            rows: _tableData.map((rowData) {
-                              final rowIndex = _tableData.indexOf(rowData);
-                              return DataRow(cells: [
-                                DataCell(Text('${rowData['index']}')),
-                                DataCell(Text('${rowData['name']}')),
-                                DataCell(Text('${rowData['price']}')),
-                                DataCell(
-                                  IconButton(
-                                    icon: Icon(Icons.delete),
-                                    onPressed: () {
-                                      setState(() {
-                                        _tableData.removeAt(rowIndex);
-                                      });
-                                    },
-                                  ),
-                                ),
-                                DataCell(
-                                  IconButton(
-                                    icon: Icon(Icons.edit),
-                                    onPressed: () {
-                                      print('Edit item');
-                                    },
-                                  ),
-                                ),
-                              ]);
-                            }).toList(),
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                      Visibility(
+                        visible: _activetable == 1,
+                        child: Container(
+                          width: width,
+                          alignment: Alignment.topCenter,
+                          child: ListView(
+                            shrinkWrap: true,
+                            children: [
+                              DataTable(
+                                columnSpacing: 0,
+                                columns: [
+                                  DataColumn(label: Text('Index'),),
+                                  DataColumn(label: Text('Name'),),
+                                  DataColumn(label: Text('Price')),
+                                  DataColumn(label: Text('Delete')),
+                                ],
+                                rows: _addonTable.map((rowData) {
+                                  final rowIndex = _addonTable.indexOf(rowData);
+                                  return DataRow(cells: [
+                                    DataCell(Text('${rowData['index']}')),
+                                    DataCell(Text('${rowData['name']}')),
+                                    DataCell(Text('${rowData['price']}')),
+                                    DataCell(
+                                      IconButton(
+                                        icon: Icon(Icons.delete),
+                                        onPressed: () {
+                                          setState(() {
+                                            _orderTable.removeAt(rowIndex);
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ]);
+                                }).toList(),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
+                  Expanded(child: SizedBox(height: 1,),),
                   SizedBox(
                     height: 100,
                     child: Row(
@@ -200,7 +284,7 @@ class Win_Order_State extends State<Win_Order> {
                           child: TextButton(
                             onPressed: () {
                               setState(() {
-                                _tableData.clear();
+                                _orderTable.clear();
                               });
                               print("Cancel Order");
                             },
@@ -224,10 +308,6 @@ class Win_Order_State extends State<Win_Order> {
                   ),
                 ],
               ),
-             // child: Container(
-             //   color: Colors.yellow,
-             //   // Todo: add table functionality
-             // ),
             ),
             Expanded(
               child: Stack(
@@ -259,7 +339,7 @@ class Win_Order_State extends State<Win_Order> {
                                         _activeMenu = 1;
                                       });
                                     },
-                                    child: Text("Snacks")
+                                    child: Text("Snacks"),
                                 ),
                               ),
                             ],
@@ -280,7 +360,7 @@ class Win_Order_State extends State<Win_Order> {
                                       color: Colors.pink,
                                       child: GridView.count(
                                         shrinkWrap: true,
-                                        crossAxisCount: 3,
+                                        crossAxisCount: 4,
                                         padding: EdgeInsets.all(10),
                                         mainAxisSpacing: 20,
                                         crossAxisSpacing: 20,
@@ -289,7 +369,9 @@ class Win_Order_State extends State<Win_Order> {
                                             .map((name) => ElevatedButton(
                                               onPressed: () {
                                                 setState(() {
+                                                  curr_smoothie = smoothie_order(smoothie: name, Size: 'medium');
                                                   _activeMenu2 = 1;
+                                                  _activetable = 1;
                                                 });
                                               },
                                               child: Column(
@@ -299,7 +381,7 @@ class Win_Order_State extends State<Win_Order> {
                                                   Text(
                                                     name,
                                                     overflow: TextOverflow.ellipsis,
-                                                    style: TextStyle(fontSize: 30,),
+                                                    style: TextStyle(fontSize: 25,),
                                                     textAlign: TextAlign.center,
                                                   ),
                                                   Expanded(child: SizedBox(height: 5,)),
@@ -335,7 +417,7 @@ class Win_Order_State extends State<Win_Order> {
                                       color: Colors.pink,
                                       child: GridView.count(
                                         shrinkWrap: true,
-                                        crossAxisCount: 3,
+                                        crossAxisCount: 4,
                                         padding: EdgeInsets.all(10),
                                         mainAxisSpacing: 20,
                                         crossAxisSpacing: 20,
@@ -343,7 +425,7 @@ class Win_Order_State extends State<Win_Order> {
                                         // Todo: create custom button class
                                             .map((name) => ElevatedButton(
                                           onPressed: () {
-                                            _addRow(name);
+                                            _addToOrder(name, '-', 12.99);
                                             print(name);
                                           },
                                           child: Column(
@@ -353,7 +435,7 @@ class Win_Order_State extends State<Win_Order> {
                                               Text(
                                                 name,
                                                 overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(fontSize: 30,),
+                                                style: TextStyle(fontSize: 25,),
                                                 textAlign: TextAlign.center,
                                               ),
                                               Expanded(child: SizedBox(height: 5,)),
@@ -394,23 +476,84 @@ class Win_Order_State extends State<Win_Order> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
                               Expanded(
-                                child: ElevatedButton(
-                                  onPressed: (){
-                                    setState(() {
-                                      _activeMenu2 = 0;
-                                    });
-                                  },
-                                  child: Text("Back Button"),
-                                ),
-                              ),
-                              Expanded(
-                                child: ElevatedButton(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 50),
+                                  child: ElevatedButton(
                                     onPressed: (){
                                       setState(() {
                                         _activeMenu2 = 0;
+                                        _activetable = 0;
+                                        _addonTable.clear();
                                       });
                                     },
-                                    child: Text("Add to Order")
+                                    child: Icon(Icons.arrow_back),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+
+                                child: Column(
+                                  children: [
+                                    TextButton(
+                                        onPressed: (){
+                                          setState(() {
+                                            if (curr_smoothie.getSize() == 'medium'){
+                                              curr_smoothie.setSmoothieSize('large');
+                                            }
+                                            else if (curr_smoothie.getSize() == 'small'){
+                                              curr_smoothie.setSmoothieSize('medium');
+                                            }
+                                            else if (curr_smoothie.getSize() == 'large'){
+                                              curr_smoothie.setSmoothieSize('small');
+                                            }
+                                          });
+                                          },
+                                        child: Icon(Icons.arrow_drop_up)
+                                    ),
+                                    Center(
+                                        child: Text(
+                                        curr_smoothie.getSmoothie(),
+                                          style: TextStyle(
+                                            overflow: TextOverflow.ellipsis,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20,
+                                            color: Colors.redAccent,
+                                          ),
+                                        )
+                                    ),
+                                    TextButton(
+                                        onPressed: (){
+                                          setState(() {
+                                            if (curr_smoothie.getSize() == 'medium'){
+                                              curr_smoothie.setSmoothieSize('small');
+                                            }
+                                            else if (curr_smoothie.getSize() == 'small'){
+                                              curr_smoothie.setSmoothieSize('large');
+                                            }
+                                            else if (curr_smoothie.getSize() == 'large'){
+                                              curr_smoothie.setSmoothieSize('medium');
+                                            }
+                                          });
+                                        },
+                                        child: Icon(Icons.arrow_drop_down)
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 50),
+                                  child: ElevatedButton(
+                                      onPressed: (){
+                                        setState(() {
+                                          _addToOrder(curr_smoothie.getName(), curr_smoothie.getSize(), 0.99);
+                                          _activeMenu2 = 0;
+                                          _activetable = 0;
+                                          _addonTable.clear();
+                                        });
+                                      },
+                                      child: Text("Add to Order")
+                                  ),
                                 ),
                               ),
                             ],
@@ -427,7 +570,7 @@ class Win_Order_State extends State<Win_Order> {
                                 color: Colors.pink,
                                 child: GridView.count(
                                   shrinkWrap: true,
-                                  crossAxisCount: 3,
+                                  crossAxisCount: 4,
                                   padding: EdgeInsets.all(10),
                                   mainAxisSpacing: 20,
                                   crossAxisSpacing: 20,
@@ -436,7 +579,9 @@ class Win_Order_State extends State<Win_Order> {
                                       .map((name) => ElevatedButton(
                                     onPressed: () {
                                       setState(() {
-                                        _activeMenu2 = 0;
+                                        curr_smoothie.addAddon(name);
+                                        // Todo: get addon price
+                                        _addAddon(name, 0.99);
                                       });
                                     },
                                     child: Column(
@@ -446,7 +591,7 @@ class Win_Order_State extends State<Win_Order> {
                                         Text(
                                           name,
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(fontSize: 30,),
+                                          style: TextStyle(fontSize: 25,),
                                           textAlign: TextAlign.center,
                                         ),
                                         Expanded(child: SizedBox(height: 5,)),
