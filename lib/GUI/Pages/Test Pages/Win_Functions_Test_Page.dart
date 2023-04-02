@@ -41,7 +41,7 @@ class _Win_Functions_Test_Page_StartState extends State<Win_Functions_Test_Page>
               height: 20,
             ),
             ElevatedButton(onPressed: (){
-              menu_item_obj menu_item = menu_item_obj(500, "dart test item", 50.50, 100, "dart item");
+              menu_item_obj menu_item = menu_item_obj(500, "dart test item", 50.50, 100, "smoothie", ["Banana", "Strawberry", "test ingredient"]);
               dbc.add_menu_item(menu_item);
             }, child: const Text("Add menu item to database")),
             const SizedBox(

@@ -67,6 +67,7 @@ exports.getOneEmployeeByIdTest = functions.https.onCall(async (data, context) =>
 
 });
 
+// Gets the largest id from the menu_items table, so that it can be used when adding new menu items
 exports.getLastMenuItemID = functions.https.onCall(async (data, context) => {
     const client = new Client({
           host: 'csce-315-db.engr.tamu.edu',
@@ -79,6 +80,26 @@ exports.getLastMenuItemID = functions.https.onCall(async (data, context) => {
     await client.connect()
 
     const res = await client.query('SELECT menu_item_id FROM menu_items ORDER BY menu_item_id DESC LIMIT 1');
+
+    client.end()
+
+    return res.rows
+
+})
+
+// Gets the largest id from the ingredients_table table, so that it can be used when adding an item's ingredients
+exports.getLastIngredientsTableID = functions.https.onCall(async (data, context) => {
+    const client = new Client({
+          host: 'csce-315-db.engr.tamu.edu',
+          user: 'csce315331_team_13_master',
+          password: 'Lucky_13',
+          database: 'csce315331_team_13',
+          port: 5432,
+    });
+
+    await client.connect()
+
+    const res = await client.query('SELECT row_id FROM ingredients_table ORDER BY row_id DESC LIMIT 1');
 
     client.end()
 
@@ -107,6 +128,25 @@ exports.addMenuItem = functions.https.onCall(async (data, context) => {
     return "Added menu item to database"
 });
 
+exports.insertIntoIngredientsTable = functions.https.onCall(async (data, context) => {
+    const client = new Client({
+          host: 'csce-315-db.engr.tamu.edu',
+          user: 'csce315331_team_13_master',
+          password: 'Lucky_13',
+          database: 'csce315331_team_13',
+          port: 5432,
+    });
+
+    await client.connect()
+
+    const {values} = data
+
+    const res = await client.query('INSERT INTO ingredients_table (row_id, menu_item_name, ingredient_name, ingredient_amount) VALUES(' + values + ')')
+
+    client.end()
+
+    return "Added ingredient to ingredients_table"
+});
 
 
 
