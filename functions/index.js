@@ -4,6 +4,7 @@ const functions = require('firebase-functions');
 //This imports a postgres library for JavaScript
 const { Client } = require('pg');
 
+//This creates an object we can use to connect to our database
 
 
 // This is a function without parameters, it's very similar to a parameterized function
@@ -19,13 +20,14 @@ const { Client } = require('pg');
 // also we likely won't use context
 exports.getEmployeesTest = functions.https.onCall(async (data, context) => {
 
-    const client = new Client({
-          host: 'csce-315-db.engr.tamu.edu',
-          user: 'csce315331_team_13_master',
-          password: 'Lucky_13',
-          database: 'csce315331_team_13',
-          port: 5432,
+const client = new Client({
+      host: 'csce-315-db.engr.tamu.edu',
+      user: 'csce315331_team_13_master',
+      password: 'Lucky_13',
+      database: 'csce315331_team_13',
+      port: 5432,
     });
+
 // await makes the rest of the function wait until this line completes
 // this connects to our database
     await client.connect()
@@ -47,13 +49,14 @@ exports.getEmployeesTest = functions.https.onCall(async (data, context) => {
 // this is a function with a parameter
 exports.getOneEmployeeByIdTest = functions.https.onCall(async (data, context) => {
 
-    const client = new Client({
-          host: 'csce-315-db.engr.tamu.edu',
-          user: 'csce315331_team_13_master',
-          password: 'Lucky_13',
-          database: 'csce315331_team_13',
-          port: 5432,
+const client = new Client({
+      host: 'csce-315-db.engr.tamu.edu',
+      user: 'csce315331_team_13_master',
+      password: 'Lucky_13',
+      database: 'csce315331_team_13',
+      port: 5432,
     });
+
 //  this is makes the function have the parameter employee_id
     const {employee_id} = data;
 
@@ -61,96 +64,24 @@ exports.getOneEmployeeByIdTest = functions.https.onCall(async (data, context) =>
 
 //  you can simply add variables to the query
     const res = await client.query('SELECT * FROM employees WHERE employee_id =' + employee_id)
-    client.end()
-
-    return res.rows
-
-});
-
-// Gets the largest id from the menu_items table, so that it can be used when adding new menu items
-exports.getLastMenuItemID = functions.https.onCall(async (data, context) => {
-    const client = new Client({
-          host: 'csce-315-db.engr.tamu.edu',
-          user: 'csce315331_team_13_master',
-          password: 'Lucky_13',
-          database: 'csce315331_team_13',
-          port: 5432,
-    });
-
-    await client.connect()
-
-    const res = await client.query('SELECT menu_item_id FROM menu_items ORDER BY menu_item_id DESC LIMIT 1');
 
     client.end()
 
     return res.rows
 
-})
-
-// Gets the largest id from the ingredients_table table, so that it can be used when adding an item's ingredients
-exports.getLastIngredientsTableID = functions.https.onCall(async (data, context) => {
-    const client = new Client({
-          host: 'csce-315-db.engr.tamu.edu',
-          user: 'csce315331_team_13_master',
-          password: 'Lucky_13',
-          database: 'csce315331_team_13',
-          port: 5432,
-    });
-
-    await client.connect()
-
-    const res = await client.query('SELECT row_id FROM ingredients_table ORDER BY row_id DESC LIMIT 1');
-
-    client.end()
-
-    return res.rows
-
-})
-
-exports.addMenuItem = functions.https.onCall(async (data, context) => {
-
-    const client = new Client({
-          host: 'csce-315-db.engr.tamu.edu',
-          user: 'csce315331_team_13_master',
-          password: 'Lucky_13',
-          database: 'csce315331_team_13',
-          port: 5432,
-    });
-
-    await client.connect()
-
-    const {values} = data
-
-    const res = await client.query('INSERT INTO menu_items (menu_item_id, menu_item, item_price, amount_in_stock, type) VALUES(' + values + ')')
-
-    client.end()
-
-    return "Added menu item to database"
-});
-
-exports.insertIntoIngredientsTable = functions.https.onCall(async (data, context) => {
-    const client = new Client({
-          host: 'csce-315-db.engr.tamu.edu',
-          user: 'csce315331_team_13_master',
-          password: 'Lucky_13',
-          database: 'csce315331_team_13',
-          port: 5432,
-    });
-
-    await client.connect()
-
-    const {values} = data
-
-    const res = await client.query('INSERT INTO ingredients_table (row_id, menu_item_name, ingredient_name, ingredient_amount) VALUES(' + values + ')')
-
-    client.end()
-
-    return "Added ingredient to ingredients_table"
 });
 
 
 // for getting the user's info after logging in
 exports.getEmployeeByUID = functions.https.onCall(async (data, context) => {
+
+const client = new Client({
+      host: 'csce-315-db.engr.tamu.edu',
+      user: 'csce315331_team_13_master',
+      password: 'Lucky_13',
+      database: 'csce315331_team_13',
+      port: 5432,
+    });
 
     const {employee_uid} = data;
 
@@ -163,6 +94,7 @@ exports.getEmployeeByUID = functions.https.onCall(async (data, context) => {
     return res.rows
 
 });
+
 
 
 
