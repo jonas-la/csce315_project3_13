@@ -1,3 +1,4 @@
+import 'package:csce315_project3_13/GUI/Pages/Login/Win_Login.dart';
 import 'package:csce315_project3_13/GUI/Pages/Win_Manager_View.dart';
 import 'package:csce315_project3_13/Models/employee.dart';
 import 'package:cloud_functions/cloud_functions.dart';
@@ -55,7 +56,11 @@ class login_helper{
     }
   }
 
+
+
   Future<void> navigate_to_landing({required BuildContext context}) async {
+    // this navigates the logged in user to the correct first page for them
+
     //TODO add functionality to navigate to correct page for user
 
     String user_uid = await get_firebase_uid();
@@ -98,7 +103,9 @@ class login_helper{
 
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(email: user_email, password: user_password);
-      // Handle successful login
+      // if account creation is successful
+      Navigator.pushReplacementNamed(context, Win_Login.route);
+
     } on FirebaseAuthException catch (e) {
 
       print('ERROR Could not create email');
@@ -213,7 +220,11 @@ class login_helper{
 
   // Queries the psql database to get the data from the employee table
   // returns an employee object populated by the row with the given uid
+  // if the uid is not in the database, the function returns an employee with
+  // role = 'Customer', and email and name set to the logged in email and name
   Future<employee> get_employee_by_UID_database(String employee_uid) async {
+
+    String employee_email = await get_firebase_email();
 
     final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('getEmployeeByUID');
 
@@ -234,7 +245,7 @@ class login_helper{
       employee_hourly_rate_string = employee_hourly_rate_string.replaceAll('\$', '');
       double employee_hourly_rate = double.parse(employee_hourly_rate_string);
 
-      String employee_email = await get_firebase_email();
+
 
       print(employee_name);
       print(employee_role);
@@ -250,7 +261,7 @@ class login_helper{
       print("error was");
       print(e);
 
-      return employee(id: 0, name: "", email: "", role: "Customer", uid: employee_uid, hourly_rate: 0.0);
+      return employee(id: 0, name: employee_email, email: employee_email, role: "Customer", uid: employee_uid, hourly_rate: 0.0);
     }
     }
 
