@@ -18,6 +18,7 @@ const { Client } = require('pg');
 // data and context are auto assigned by system variables if not given so don't stress about them being here
 // also we likely won't use context
 exports.getEmployeesTest = functions.https.onCall(async (data, context) => {
+
     const client = new Client({
           host: 'csce-315-db.engr.tamu.edu',
           user: 'csce315331_team_13_master',
