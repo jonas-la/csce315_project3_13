@@ -34,7 +34,6 @@ class database_connection{
     HttpsCallable getItemID = FirebaseFunctions.instance.httpsCallable('getLastMenuItemID');
     HttpsCallable getIngrID = FirebaseFunctions.instance.httpsCallable('getLastIngredientsTableID');
     HttpsCallable addMenuItem = FirebaseFunctions.instance.httpsCallable('addMenuItem');
-    HttpsCallable addIngredient = FirebaseFunctions.instance.httpsCallable('insertIntoIngredientsTable');
 
     final itemIDQuery = await getItemID();
     List<dynamic> data = itemIDQuery.data;
@@ -60,7 +59,7 @@ class database_connection{
           for(String ingredient in new_item.ingredients) {
             last_ingr_id += 1;
             ingredient_obj ingr_obj = ingredient_obj(last_ingr_id, new_item.menu_item, ingredient, i);
-            await addIngredient.call({'values': ingr_obj.get_values()});
+            add_ingredient_row(ingr_obj);
           }
         }
         else if(i == 2)
@@ -71,7 +70,7 @@ class database_connection{
           for(String ingredient in new_item.ingredients) {
             last_ingr_id += 1;
             ingredient_obj ingr_obj = ingredient_obj(last_ingr_id, new_item.menu_item, ingredient, i);
-            await addIngredient.call({'values': ingr_obj.get_values()});
+            add_ingredient_row(ingr_obj);
           }
         }
         else
@@ -82,7 +81,7 @@ class database_connection{
           for(String ingredient in new_item.ingredients) {
             last_ingr_id += 1;
             ingredient_obj ingr_obj = ingredient_obj(last_ingr_id, new_item.menu_item, ingredient, i);
-            await addIngredient.call({'values': ingr_obj.get_values()});
+            add_ingredient_row(ingr_obj);
           }
         }
         String values = new_item.get_values();
@@ -98,4 +97,81 @@ class database_connection{
 
   }
 
+  // Simply takes in an ingredient_obj which mirrors a row from the ingredients_table table
+  //    and adds it to the database
+  Future<void> add_ingredient_row(ingredient_obj ingr_obj) async
+  {
+    HttpsCallable addIngredient = FirebaseFunctions.instance.httpsCallable('insertIntoIngredientsTable');
+    await addIngredient.call({'values': ingr_obj.get_values()});
+  }
+
+  Future<void> edit_ingredient_row(int row_id, int new_amount) async
+  {
+    HttpsCallable editIngredient = FirebaseFunctions.instance.httpsCallable('updateIngredientsTableRow');
+    await editIngredient.call({
+      'row_id': row_id,
+      'new_amount': new_amount
+    });
+  }
+
+  // Deletes a single row from the ingredients_table table specified by row_id
+  Future<void> delete_ingredient_row(int row_id) async
+  {
+    HttpsCallable deleteIngredient = FirebaseFunctions.instance.httpsCallable('deleteIngredientsTableRow');
+    await deleteIngredient.call({'row_id': row_id});
+  }
+
+
+  Future<void> process_order(order_obj order) async
+  {
+
+  }
+
+  // Takes in an order_obj.item_ids_in_order, and will return a list of ints of item ids that do not have enough stock
+  // If this list is empty, then the order is valid!
+  Future<List<int>> is_order_valid(List<int> items) async
+  {
+    List<int> invalid_item_ids = [];
+    for(int item_id in items)
+    {
+
+    }
+
+
+    return invalid_item_ids;
+
+  }
+
+  Future<int> get_item_stock(int menu_item_id) async
+  {
+
+    return 0;
+  }
+
+  Future<int> recalculate_item_stock(int menu_item_id) async
+  {
+    String menu_item_name = await get_item_name(menu_item_id);
+
+    return 0;
+  }
+
+  // Returns false if the item requested does not have enough stock to decrement by
+  Future<bool> inventory_decrement(String ingredient, int amount_used) async
+  {
+
+
+    return true;
+  }
+
+  Future<String> get_item_name(int menu_item_id) async
+  {
+    HttpsCallable getter = FirebaseFunctions.instance.httpsCallable('getMenuItemName');
+    final item_name_query = await getter.call({'menu_item_id': menu_item_id});
+    List<dynamic> data = item_name_query.data;
+    String menu_item = data[0]['menu_item'];
+
+    return menu_item;
+  }
+
 }
+
