@@ -31,10 +31,12 @@ class _Win_Create_AccountState extends State<Win_Create_Account> {
   void _create_account({required BuildContext context}){
 
     if(_password_controller1.text == _password_controller2.text){
-    //  If both passwords are the same
+      //  If both passwords are the same calls the login helper function
+
+      _login_helper_instance.create_account(context: context, user_email: _username_controller.text, user_password: _password_controller1.text);
 
     }else{
-    //  If the passwords are different
+      //  If the passwords are different
 
       showDialog(
         context: context,
