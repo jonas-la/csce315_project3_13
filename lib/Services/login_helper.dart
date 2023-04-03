@@ -9,7 +9,8 @@ import 'package:flutter/material.dart';
 class login_helper{
 
   void login({required BuildContext context, required String username, required String password}) async {
-    bool sign_in_successful = await sign_in_email_password(user_email: username, user_password: password);
+    String cleared_username = username.replaceAll(" ", "");
+    bool sign_in_successful = await sign_in_email_password(user_email: cleared_username, user_password: password);
     if(sign_in_successful){
       navigate_to_landing(context: context);
     }else{
