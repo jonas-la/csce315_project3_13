@@ -1,3 +1,5 @@
+
+import 'package:csce315_project3_13/Constants/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +10,7 @@ Widget ExampleButton({required VoidCallback onTap, String buttonName = ""}){
       height: 40,
       width: 100,
       decoration: BoxDecoration(
-        color: Colors.pinkAccent,
+        color: k_active_color,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: Colors.transparent,

@@ -127,15 +127,18 @@ class database_connection{
 
   }
 
-  // Takes in an order_obj.item_ids_in_order, and will return true if we have enough stock to process the order
-  Future<pair> is_order_valid(List<int> items) async
+  // Takes in an order_obj.item_ids_in_order, and will return a list of ints of item ids that do not have enough stock
+  // If this list is empty, then the order is valid!
+  Future<List<int>> is_order_valid(List<int> items) async
   {
-    // In the case the order is not valid, this pair will consist of false as the first value in the pair and a LIST of item ids that we do not have enough stock for as the second
-    pair return_pair = pair(true, null);
+    List<int> invalid_item_ids = [];
+    for(int item_id in items)
+    {
+
+    }
 
 
-
-    return return_pair;
+    return invalid_item_ids;
 
   }
 
@@ -147,8 +150,17 @@ class database_connection{
 
   Future<int> recalculate_item_stock(int menu_item_id) async
   {
-    String menu_item_name = get_item_name(menu_item_id);
+    String menu_item_name = await get_item_name(menu_item_id);
+
     return 0;
+  }
+
+  // Returns false if the item requested does not have enough stock to decrement by
+  Future<bool> inventory_decrement(String ingredient, int amount_used) async
+  {
+
+
+    return true;
   }
 
   Future<String> get_item_name(int menu_item_id) async

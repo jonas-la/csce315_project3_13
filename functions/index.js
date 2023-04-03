@@ -18,7 +18,6 @@ const { Client } = require('pg');
 // data and context are auto assigned by system variables if not given so don't stress about them being here
 // also we likely won't use context
 exports.getEmployeesTest = functions.https.onCall(async (data, context) => {
-
     const client = new Client({
           host: 'csce-315-db.engr.tamu.edu',
           user: 'csce315331_team_13_master',
@@ -212,6 +211,68 @@ exports.getMenuItemName = functions.https.onCall(async (data, context) => {
 
     return res.rows
 })
+
+exports.getMenuItemType = functions.https.onCall(async (data, context) => {
+    const client = new Client({
+          host: 'csce-315-db.engr.tamu.edu',
+          user: 'csce315331_team_13_master',
+          password: 'Lucky_13',
+          database: 'csce315331_team_13',
+          port: 5432,
+    });
+
+    await client.connect()
+
+    const {menu_item_id} = data
+
+    const res = await client.query('SELECT type FROM menu_items WHERE menu_item_id=' + menu_item_id)
+
+    client.end()
+
+    return res.rows
+})
+
+exports.getMenuItemIngredients = functions.https.onCall(async (data, context) => {
+    const client = new Client({
+          host: 'csce-315-db.engr.tamu.edu',
+          user: 'csce315331_team_13_master',
+          password: 'Lucky_13',
+          database: 'csce315331_team_13',
+          port: 5432,
+    });
+
+    await client.connect()
+
+    const {menu_item_name} = data
+
+    const res = await client.query('SELECT ingredient_name, ingredient_amount FROM ingredients_table WHERE menu_item_name=\'' + menu_item_name + '\'')
+
+    client.end()
+
+    return res.rows
+})
+
+exports.getAmountInvStock = functions.https.onCall(async (data, context) => {
+    const client = new Client({
+          host: 'csce-315-db.engr.tamu.edu',
+          user: 'csce315331_team_13_master',
+          password: 'Lucky_13',
+          database: 'csce315331_team_13',
+          port: 5432,
+    });
+
+    await client.connect()
+
+    const {ingredient} = data
+
+    const res = await client.query('SELECT amount_inv_stock FROM inventory WHERE ingredient=\'' + ingredient + '\'');
+
+    client.end()
+
+    return res.rows
+})
+
+
 
 
 
