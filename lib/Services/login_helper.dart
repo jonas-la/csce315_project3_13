@@ -1,3 +1,4 @@
+import 'package:csce315_project3_13/GUI/Pages/Loading/Loading_Page.dart';
 import 'package:csce315_project3_13/GUI/Pages/Login/Win_Login.dart';
 import 'package:csce315_project3_13/GUI/Pages/Win_Manager_View.dart';
 import 'package:csce315_project3_13/Models/employee.dart';
@@ -9,9 +10,14 @@ import 'package:flutter/material.dart';
 class login_helper{
 
   void login({required BuildContext context, required String username, required String password}) async {
+
+
+
     String cleared_username = username.replaceAll(" ", "");
     bool sign_in_successful = await sign_in_email_password(user_email: cleared_username, user_password: password);
     if(sign_in_successful){
+      //Shows the loading screen while the function runs
+      Navigator.pushNamed(context, Win_Loading_Page.route);
       navigate_to_landing(context: context);
     }else{
       print("Failed login");
@@ -75,22 +81,37 @@ class login_helper{
       //  TODO Add navigation to Manager page
       print("Navigating to manager page");
 
+      //Pops the loading screen
+      Navigator.pop(context);
+
     }else if(current_employee.role == "Server"){
       //  TODO Add navigation to Server page
       print("Navigating to server page");
+
+      //Pops the loading screen
+      Navigator.pop(context);
 
     }else if(current_employee.role == "Menu"){
       //  TODO Add navigation to Menu page
       print("Navigating to menu page");
 
+      //Pops the loading screen
+      Navigator.pop(context);
+
+
     }else if(current_employee.role == "Customer"){
       //  TODO Add navigation to Customer page
       print("Navigating to customer page");
 
+      //Pops the loading screen
+      Navigator.pop(context);
     }else{
       // TODO Handle the edge case
       print("!!! The role was not one of the options");
       print("Handling unknown navigation");
+
+      //Pops the loading screen
+      Navigator.pop(context);
 
     }
 
