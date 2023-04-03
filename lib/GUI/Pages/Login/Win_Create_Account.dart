@@ -1,3 +1,4 @@
+import 'package:csce315_project3_13/GUI/Components/Login_Button.dart';
 import 'package:csce315_project3_13/GUI/Pages/Login/Win_Login.dart';
 import 'package:csce315_project3_13/Services/login_helper.dart';
 import 'package:flutter/material.dart';
@@ -89,9 +90,11 @@ class _Win_Create_AccountState extends State<Win_Create_Account> {
 
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(onPressed: (){
+            child: Login_Button(onTap: (){
               Navigator.pushReplacementNamed(context, Win_Login.route);
-            }, child: const Text("Back")),
+            }, buttonName: "Back",
+            fontSize: 15,
+            ),
           ),
 
         ],
@@ -166,9 +169,10 @@ class _Win_Create_AccountState extends State<Win_Create_Account> {
 
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(onPressed: (){
+                child: Login_Button(onTap: (){
                   _create_account(context: context);
-                }, child: const Text("Create Account")),
+                }, buttonName: "Create",
+                ),
               ),
 
 
