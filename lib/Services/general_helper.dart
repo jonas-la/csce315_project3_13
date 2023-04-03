@@ -39,4 +39,7 @@ class general_helper
     dynamic res = await get_amt_in_stock.call({'ingredient': ingredient});
     return res.data;
   }
+
+
+
 }

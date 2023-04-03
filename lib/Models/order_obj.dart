@@ -26,6 +26,15 @@ class order_obj
   // Returns a comma-separated list of all the fields of the object, should be used when using VALUES() in SQL commands
   String get_values()
   {
-    return "${this.transaction_id}, ${this.order_taker_id}, ${this.item_ids_in_order}, ${this.total_price}, '${this.customer_name}', '${this.date_of_order}', '${this.status}'";
+    String ids = "{";
+    for(int i = 0; i < this.item_ids_in_order.length; ++i) {
+      ids += item_ids_in_order[i].toString();
+      if(i == this.item_ids_in_order.length - 1) {
+        ids += "}";
+      } else {
+        ids += ", ";
+      }
+    }
+    return "${this.transaction_id}, ${this.order_taker_id}, '${ids}', ${this.total_price}, '${this.customer_name}', '${this.date_of_order}', '${this.status}'";
   }
 }

@@ -15,6 +15,7 @@ class order_processing_helper
       for(MapEntry entry in ingredient_amounts.entries) {
         await inventory_decrement(entry.key, entry.value);
       }
+      await push_to_table(order.get_values());
     }
 
     return invalid_items;
@@ -43,8 +44,25 @@ class order_processing_helper
   Future<void> inventory_decrement(String ingredient, int amount_used) async
   {
     int amount_left_to_decrement = amount_used;
-    print('$ingredient decrementing by $amount_used');
+    HttpsCallable setter = FirebaseFunctions.instance.httpsCallable('updateInventoryRow');
+    List<dynamic> inventory_item_amounts = await gen_helper.get_amount_inv_stock(ingredient);
 
+    while(amount_left_to_decrement > 0) {
+      if(inventory_item_amounts[0]['amount_inv_stock'] < amount_left_to_decrement) {
+        await setter.call({
+          'inv_order_id': inventory_item_amounts[0]['inv_order_id'],
+          'new_amount' : 0
+        });
+        amount_left_to_decrement -= inventory_item_amounts[0]['amount_inv_stock'] as int;
+        inventory_item_amounts.removeAt(0);
+      } else {
+        await setter.call({
+          'inv_order_id': inventory_item_amounts[0]['inv_order_id'],
+          'new_amount' : ((inventory_item_amounts[0]['amount_inv_stock'] as int) - amount_left_to_decrement)
+        });
+        amount_left_to_decrement = 0;
+      }
+    }
 
   }
 
@@ -72,5 +90,11 @@ class order_processing_helper
 
     return ingredient_amounts;
 
+  }
+
+  Future<void> push_to_table(String values) async
+  {
+    HttpsCallable adder = FirebaseFunctions.instance.httpsCallable('insertIntoOrderHistory');
+    await adder.call({'values': values});
   }
 }

@@ -265,13 +265,54 @@ exports.getAmountInvStock = functions.https.onCall(async (data, context) => {
 
     const {ingredient} = data
 
-    const res = await client.query('SELECT amount_inv_stock FROM inventory WHERE ingredient=\'' + ingredient + '\'');
+    const res = await client.query('SELECT inv_order_id, amount_inv_stock FROM inventory WHERE ingredient=\'' + ingredient + '\' ORDER BY expiration_date DESC, date_ordered');
 
     client.end()
 
     return res.rows
 })
 
+exports.updateInventoryRow = functions.https.onCall(async (data, context) => {
+    const client = new Client({
+          host: 'csce-315-db.engr.tamu.edu',
+          user: 'csce315331_team_13_master',
+          password: 'Lucky_13',
+          database: 'csce315331_team_13',
+          port: 5432,
+    });
+
+    await client.connect()
+
+    const {inv_order_id} = data
+    const {new_amount} = data
+
+    const res = await client.query('UPDATE inventory SET amount_inv_stock=' + new_amount + 'WHERE inv_order_id=' + inv_order_id)
+
+    client.end()
+
+    return "Successfully updated inventory row"
+
+})
+
+exports.insertIntoOrderHistory = functions.https.onCall(async (data, context) => {
+     const client = new Client({
+           host: 'csce-315-db.engr.tamu.edu',
+           user: 'csce315331_team_13_master',
+           password: 'Lucky_13',
+           database: 'csce315331_team_13',
+           port: 5432,
+     });
+
+     await client.connect()
+
+     const {values} = data
+
+     const res = await client.query('INSERT INTO order_history (transaction_id, order_taker_id, item_ids_in_order, total_price, customer_name, date_of_order, status) VALUES(' + values + ')')
+
+     client.end()
+
+     return "Successfully added order to the order history"
+})
 
 
 
