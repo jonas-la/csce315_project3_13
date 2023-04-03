@@ -1,25 +1,24 @@
-import 'package:csce315_project3_13/GUI/Pages/Login/Win_Create_Account.dart';
-import 'package:csce315_project3_13/GUI/Pages/Login/Win_Reset_Password.dart';
-import 'package:csce315_project3_13/GUI/Pages/Test%20Pages/Win_Functions_Test_Page.dart';
+import 'package:csce315_project3_13/GUI/Pages/Login/Win_Login.dart';
 import 'package:csce315_project3_13/Services/login_helper.dart';
 import 'package:flutter/material.dart';
-import '../Win_Manager_View.dart';
 
-class Win_Login extends StatefulWidget {
-  static const String route = '/login';
-  const Win_Login({super.key});
+
+class Win_Create_Account extends StatefulWidget {
+  static const String route = '/create-account';
+  const Win_Create_Account({Key? key}) : super(key: key);
 
   @override
-  State<Win_Login> createState() => _Win_LoginState();
+  State<Win_Create_Account> createState() => _Win_Create_AccountState();
 }
 
-class _Win_LoginState extends State<Win_Login> {
+class _Win_Create_AccountState extends State<Win_Create_Account> {
 
-  String _page_name = "Login";
+  String _page_name = "Create account";
   bool _show_password = false;
 
   late TextEditingController _username_controller;
-  late TextEditingController _password_controller;
+  late TextEditingController _password_controller1;
+  late TextEditingController _password_controller2;
 
   login_helper _login_helper_instance = login_helper();
 
@@ -29,8 +28,37 @@ class _Win_LoginState extends State<Win_Login> {
     });
   }
 
-  void _login(BuildContext context){
-    _login_helper_instance.login(context: context, username: _username_controller.text, password: _password_controller.text);
+  void _create_account({required BuildContext context}){
+
+    if(_password_controller1.text == _password_controller2.text){
+      //  If both passwords are the same calls the login helper function
+
+      _login_helper_instance.create_account(context: context, user_email: _username_controller.text, user_password: _password_controller1.text);
+
+    }else{
+      //  If the passwords are different
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Entered different passwords'),
+            content: const Text('Try again, and ensure your passwords match'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  // Perform some action here
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+
+    }
+
   }
 
 
@@ -39,42 +67,33 @@ class _Win_LoginState extends State<Win_Login> {
   void initState() {
     super.initState();
     _username_controller = TextEditingController();
-    _password_controller = TextEditingController();
+    _password_controller1 = TextEditingController();
+    _password_controller2 = TextEditingController();
   }
 
   @override
   void dispose() {
     _username_controller.dispose();
-    _password_controller.dispose();
+    _password_controller1.dispose();
+    _password_controller2.dispose();
     super.dispose();
   }
 
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text(_page_name),
         actions: [
-          Row(
-            children: [
 
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(onPressed: (){
-                  Navigator.pushReplacementNamed(context, Win_Create_Account.route);
-                }, child: const Text("Create account")),
-              ),
-
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(onPressed: (){
-                  Navigator.pushReplacementNamed(context, Win_Reset_Password.route);
-                }, child: const Text("Reset password")),
-              ),
-            ],
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(onPressed: (){
+              Navigator.pushReplacementNamed(context, Win_Login.route);
+            }, child: const Text("Back")),
           ),
+
         ],
       ),
       body: Center(
@@ -105,17 +124,30 @@ class _Win_LoginState extends State<Win_Login> {
                   ),),
               ),
 
+
+
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
-                  controller: _password_controller,
-                  onSubmitted: (String pass_string){
-                    _login(context);
-                  },
+                  controller: _password_controller1,
                   obscureText: !_show_password,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Password',
+                  ),),
+              ),
+
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: _password_controller2,
+                  onSubmitted: (String pass_string){
+                    _create_account(context: context);
+                  },
+                  obscureText: !_show_password,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Re-enter Password',
                   ),),
               ),
 
@@ -135,8 +167,8 @@ class _Win_LoginState extends State<Win_Login> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(onPressed: (){
-                  _login(context);
-                }, child: const Text("Login")),
+                  _create_account(context: context);
+                }, child: const Text("Create Account")),
               ),
 
 

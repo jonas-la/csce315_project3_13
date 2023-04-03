@@ -1,7 +1,7 @@
-import 'package:csce315_project3_13/Services/database_connection.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:csce315_project3_13/Services/login_helper.dart';
 import 'package:flutter/material.dart';
-import '../../../Models/models_library.dart';
-import '../../../Services/database_connection.dart';
+import '../../../Services/testing_cloud_functions.dart';
 import '../Win_Manager_View.dart';
 
 class Win_Functions_Test_Page extends StatefulWidget {
@@ -14,8 +14,11 @@ class Win_Functions_Test_Page extends StatefulWidget {
 
 class _Win_Functions_Test_Page_StartState extends State<Win_Functions_Test_Page> {
 
-  database_connection dbc = database_connection();
+  testing_cloud_functions cloud_functions_tester = testing_cloud_functions();
 
+  login_helper login_helper_instance = login_helper();
+
+  
   @override
   Widget build(BuildContext context) {
 
@@ -29,24 +32,40 @@ class _Win_Functions_Test_Page_StartState extends State<Win_Functions_Test_Page>
           children: <Widget>[
 
             ElevatedButton(onPressed: (){
-              dbc.getEmployees();
+              cloud_functions_tester.getEmployees();
             }, child: const Text("Test Firebase Function")),
             const SizedBox(
               height: 20,
             ),
             ElevatedButton(onPressed: (){
-              dbc.getEmployeeByID(2);
+              cloud_functions_tester.getEmployeeByID(2);
             }, child: const Text("Test Firebase Function with parameter")),
             const SizedBox(
               height: 20,
             ),
             ElevatedButton(onPressed: (){
-              menu_item_obj menu_item = menu_item_obj(500, "dart test item", 50.50, 100, "smoothie", ["Banana", "Strawberry", "test ingredient"]);
-              dbc.add_menu_item(menu_item);
-            }, child: const Text("Add menu item to database")),
+              login_helper_instance.is_signed_in();
+            }, child: const Text("Get logged in user")),
             const SizedBox(
               height: 20,
             ),
+            ElevatedButton(onPressed: (){
+              login_helper_instance.get_firebase_uid();
+            }, child: const Text("Get UID")),
+
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(onPressed: (){
+              login_helper_instance.sign_out();
+            }, child: const Text("Sign out")),
+            const SizedBox(
+              height: 20,
+            ),
+
+
+
+
 
             // t
           ],
