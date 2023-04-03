@@ -193,6 +193,25 @@ exports.deleteIngredientsTableRow = functions.https.onCall(async (data, context)
     return "Successfully deleted ingredients_table row"
 })
 
+exports.getMenuItemName = functions.https.onCall(async (data, context) => {
+    const client = new Client({
+          host: 'csce-315-db.engr.tamu.edu',
+          user: 'csce315331_team_13_master',
+          password: 'Lucky_13',
+          database: 'csce315331_team_13',
+          port: 5432,
+    });
+
+    await client.connect()
+
+    const {menu_item_id} = data
+
+    const res = await client.query('SELECT menu_item FROM menu_items WHERE menu_item_id=' + menu_item_id)
+
+    client.end()
+
+    return res.rows
+})
 
 
 

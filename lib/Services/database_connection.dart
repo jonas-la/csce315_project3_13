@@ -121,4 +121,45 @@ class database_connection{
     await deleteIngredient.call({'row_id': row_id});
   }
 
+
+  Future<void> process_order(order_obj order) async
+  {
+
+  }
+
+  // Takes in an order_obj.item_ids_in_order, and will return true if we have enough stock to process the order
+  Future<pair> is_order_valid(List<int> items) async
+  {
+    // In the case the order is not valid, this pair will consist of false as the first value in the pair and a LIST of item ids that we do not have enough stock for as the second
+    pair return_pair = pair(true, null);
+
+
+
+    return return_pair;
+
+  }
+
+  Future<int> get_item_stock(int menu_item_id) async
+  {
+
+    return 0;
+  }
+
+  Future<int> recalculate_item_stock(int menu_item_id) async
+  {
+    String menu_item_name = get_item_name(menu_item_id);
+    return 0;
+  }
+
+  Future<String> get_item_name(int menu_item_id) async
+  {
+    HttpsCallable getter = FirebaseFunctions.instance.httpsCallable('getMenuItemName');
+    final item_name_query = await getter.call({'menu_item_id': menu_item_id});
+    List<dynamic> data = item_name_query.data;
+    String menu_item = data[0]['menu_item'];
+
+    return menu_item;
+  }
+
 }
+
