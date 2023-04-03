@@ -6,7 +6,7 @@ Widget Login_Button({required VoidCallback onTap, required String buttonName,Col
     padding: const EdgeInsets.all(8.0),
     child: Container(
         height: 40,
-        width: 130,
+        width: buttonWidth,
         decoration: BoxDecoration(
           color: k_active_color,
           borderRadius: BorderRadius.circular(10),
