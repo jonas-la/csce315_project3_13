@@ -79,7 +79,7 @@ exports.getEmployeeByUID = functions.https.onCall(async (data, context) => {
 
 
 
-/ Gets the largest id from the menu_items table, so that it can be used when adding new menu items
+// Gets the largest id from the menu_items table, so that it can be used when adding new menu items
 exports.getLastMenuItemID = functions.https.onCall(async (data, context) => {
     const client = new Client({
           host: 'csce-315-db.engr.tamu.edu',
