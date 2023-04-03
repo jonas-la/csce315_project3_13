@@ -1,3 +1,5 @@
+import 'package:csce315_project3_13/GUI/Pages/Login/Win_Create_Account.dart';
+import 'package:csce315_project3_13/GUI/Pages/Login/Win_Reset_Password.dart';
 import 'package:csce315_project3_13/GUI/Pages/Test%20Pages/Win_Functions_Test_Page.dart';
 import 'package:csce315_project3_13/Services/login_helper.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +15,7 @@ class Win_Login extends StatefulWidget {
 
 class _Win_LoginState extends State<Win_Login> {
 
-  String _page_name = "Login Window";
+  String _page_name = "Login";
   bool _show_password = false;
 
   late TextEditingController _username_controller;
@@ -54,6 +56,26 @@ class _Win_LoginState extends State<Win_Login> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_page_name),
+        actions: [
+          Row(
+            children: [
+
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(onPressed: (){
+                  Navigator.pushReplacementNamed(context, Win_Create_Account.route);
+                }, child: const Text("Create account")),
+              ),
+
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(onPressed: (){
+                  Navigator.pushReplacementNamed(context, Win_Reset_Password.route);
+                }, child: const Text("Reset password")),
+              ),
+            ],
+          ),
+        ],
       ),
       body: Center(
         child: Container(
@@ -72,24 +94,30 @@ class _Win_LoginState extends State<Win_Login> {
                 ),
               ),
 
-              TextField(
-                controller: _username_controller,
-                obscureText: false,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Email',
-                ),),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: _username_controller,
+                  obscureText: false,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Email',
+                  ),),
+              ),
 
-              TextField(
-                 controller: _password_controller,
-                 onSubmitted: (String pass_string){
-                   _login(context);
-                 },
-                 obscureText: !_show_password,
-                 decoration: const InputDecoration(
-                   border: OutlineInputBorder(),
-                   labelText: 'Password',
-                 ),),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: _password_controller,
+                  onSubmitted: (String pass_string){
+                    _login(context);
+                  },
+                  obscureText: !_show_password,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Password',
+                  ),),
+              ),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -97,8 +125,8 @@ class _Win_LoginState extends State<Win_Login> {
                   Checkbox(
                       value: _show_password,
                       onChanged: (changed_value){
-                    _switch_show_password();
-                  }),
+                        _switch_show_password();
+                      }),
 
                   Text("Show password"),
                 ],

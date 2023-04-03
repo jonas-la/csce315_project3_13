@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 
 class Win_Reset_Password extends StatefulWidget {
-  static const String route = '/login';
+  static const String route = '/reset-password';
   const Win_Reset_Password({Key? key}) : super(key: key);
 
   @override
