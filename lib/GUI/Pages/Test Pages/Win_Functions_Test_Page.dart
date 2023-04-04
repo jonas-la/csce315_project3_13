@@ -68,8 +68,10 @@ class _Win_Functions_Test_Page_StartState extends State<Win_Functions_Test_Page>
               height: 20,
             ),
             ElevatedButton(onPressed: (){
-              menu_item_obj obj = menu_item_obj(500, "test item", 50.50, 500, "smoothie", []);
-              menu_helper.add_menu_item(obj);
+              menu_item_obj obj = menu_item_obj(500, "dart test item", 50.50, 500, "smoothie", "available", []);
+              //menu_helper.add_menu_item(obj);
+              //menu_helper.delete_menu_item(408);
+              menu_helper.edit_item_price(406, 500.0);
             }, child: const Text("add")),
             const SizedBox(
               height: 20,

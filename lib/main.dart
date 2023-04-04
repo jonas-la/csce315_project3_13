@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
         Loading_Order_Win.route: (BuildContext context) => Loading_Order_Win(),
         Win_Order.route: (BuildContext context) => Win_Order(),
       },
-      initialRoute: Win_Login.route,
+      initialRoute: Win_Functions_Test_Page.route,
     );
   }
 }

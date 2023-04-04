@@ -81,10 +81,23 @@ class menu_item_helper
 
   }
 
-  Future<void> deleteMenuItem(int menu_item_id) async
+  Future<void> edit_item_price(int menu_item_id, double new_price) async
+  {
+    HttpsCallable editor = FirebaseFunctions.instance.httpsCallable('editItemPrice');
+    await editor.call({
+      'menu_item_id': menu_item_id,
+      'new_price': new_price
+    });
+  }
+
+  Future<void> delete_menu_item(int menu_item_id) async
   {
     String menu_item = await gen_helper.get_item_name(menu_item_id);
+    String type = await gen_helper.get_item_type(menu_item_id);
+    if(type == "smoothie") {
+      menu_item = menu_item.substring(0, menu_item.length - 6);
+    }
     HttpsCallable remover = FirebaseFunctions.instance.httpsCallable('deleteMenuItem');
-    await remover.call({'emnu_item': menu_item});
+    await remover.call({'menu_item': menu_item});
   }
 }

@@ -142,12 +142,34 @@ exports.addMenuItem = functions.https.onCall(async (data, context) => {
 
     const {values} = data
 
-    const res = await client.query('INSERT INTO menu_items (menu_item_id, menu_item, item_price, amount_in_stock, type) VALUES(' + values + ')')
+    const res = await client.query('INSERT INTO menu_items (menu_item_id, menu_item, item_price, amount_in_stock, type, status) VALUES(' + values + ')')
 
     client.end()
 
     return "Added menu item to database"
 });
+
+exports.editItemPrice = functions.https.onCall(async (data, context) => {
+
+     const client = new Client({
+           host: 'csce-315-db.engr.tamu.edu',
+           user: 'csce315331_team_13_master',
+           password: 'Lucky_13',
+           database: 'csce315331_team_13',
+           port: 5432,
+     });
+
+     await client.connect()
+
+     const {menu_item_id} = data
+     const {new_price} = data
+
+     const res = await client.query('UPDATE menu_items SET item_price=' + new_price + ' WHERE menu_item_id=' + menu_item_id)
+
+     client.end()
+
+     return "updated menu item price in the database"
+ });
 
 exports.deleteMenuItem = functions.https.onCall(async (data, context) => {
 
@@ -163,7 +185,7 @@ exports.deleteMenuItem = functions.https.onCall(async (data, context) => {
 
      const {menu_item} = data
 
-     const res = await client.query('DELETE FROM menu_items WHERE menu_item LIKE \'%' + menu_item + '%\'')
+     const res = await client.query('UPDATE menu_items SET status=\'unavailable\' WHERE menu_item LIKE \'%' + menu_item + '%\'')
 
      client.end()
 
