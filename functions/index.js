@@ -5,13 +5,6 @@ const functions = require('firebase-functions');
 const { Client } = require('pg');
 
 //This creates an object we can use to connect to our database
-const client = new Client({
-      host: 'csce-315-db.engr.tamu.edu',
-      user: 'csce315331_team_13_master',
-      password: 'Lucky_13',
-      database: 'csce315331_team_13',
-      port: 5432,
-    });
 
 // This is a function without parameters, it's very similar to a parameterized function
 // If you want to create a new function you should replace getEmployeesTest with the function name
@@ -26,6 +19,13 @@ const client = new Client({
 // also we likely won't use context
 exports.getEmployeesTest = functions.https.onCall(async (data, context) => {
 
+     const client = new Client({
+           host: 'csce-315-db.engr.tamu.edu',
+           user: 'csce315331_team_13_master',
+           password: 'Lucky_13',
+           database: 'csce315331_team_13',
+           port: 5432,
+     });
 // await makes the rest of the function wait until this line completes
 // this connects to our database
     await client.connect()
@@ -46,6 +46,14 @@ exports.getEmployeesTest = functions.https.onCall(async (data, context) => {
 
 // this is a function with a parameter
 exports.getOneEmployeeByIdTest = functions.https.onCall(async (data, context) => {
+
+     const client = new Client({
+           host: 'csce-315-db.engr.tamu.edu',
+           user: 'csce315331_team_13_master',
+           password: 'Lucky_13',
+           database: 'csce315331_team_13',
+           port: 5432,
+     });
 
 //  this is makes the function have the parameter employee_id
     const {employee_id} = data;
@@ -97,7 +105,7 @@ exports.getLastMenuItemID = functions.https.onCall(async (data, context) => {
 
     return res.rows
 
-})
+});
 
 // Gets the largest id from the ingredients_table table, so that it can be used when adding an item's ingredients
 exports.getLastIngredientsTableID = functions.https.onCall(async (data, context) => {
@@ -117,7 +125,7 @@ exports.getLastIngredientsTableID = functions.https.onCall(async (data, context)
 
     return res.rows
 
-})
+});
 
 // Adds a menu item to the menu_items table
 exports.addMenuItem = functions.https.onCall(async (data, context) => {
@@ -182,7 +190,7 @@ exports.updateIngredientsTableRow = functions.https.onCall(async (data, context)
     client.end()
 
     return "Successfully updated ingredients_table row"
-})
+});
 
 // Deletes an individual row from the ingredients_table
 exports.deleteIngredientsTableRow = functions.https.onCall(async (data, context) => {
@@ -203,7 +211,7 @@ exports.deleteIngredientsTableRow = functions.https.onCall(async (data, context)
     client.end()
 
     return "Successfully deleted ingredients_table row"
-})
+});
 
 exports.getMenuItemName = functions.https.onCall(async (data, context) => {
     const client = new Client({
@@ -223,7 +231,7 @@ exports.getMenuItemName = functions.https.onCall(async (data, context) => {
     client.end()
 
     return res.rows
-})
+});
 
 exports.getMenuItemType = functions.https.onCall(async (data, context) => {
     const client = new Client({
@@ -243,7 +251,7 @@ exports.getMenuItemType = functions.https.onCall(async (data, context) => {
     client.end()
 
     return res.rows
-})
+});
 
 exports.getMenuItemIngredients = functions.https.onCall(async (data, context) => {
     const client = new Client({
@@ -263,7 +271,7 @@ exports.getMenuItemIngredients = functions.https.onCall(async (data, context) =>
     client.end()
 
     return res.rows
-})
+});
 
 exports.getAmountInvStock = functions.https.onCall(async (data, context) => {
     const client = new Client({
@@ -283,7 +291,7 @@ exports.getAmountInvStock = functions.https.onCall(async (data, context) => {
     client.end()
 
     return res.rows
-})
+});
 
 exports.updateInventoryRow = functions.https.onCall(async (data, context) => {
     const client = new Client({
@@ -305,7 +313,7 @@ exports.updateInventoryRow = functions.https.onCall(async (data, context) => {
 
     return "Successfully updated inventory row"
 
-})
+});
 
 exports.insertIntoOrderHistory = functions.https.onCall(async (data, context) => {
      const client = new Client({
@@ -325,7 +333,61 @@ exports.insertIntoOrderHistory = functions.https.onCall(async (data, context) =>
      client.end()
 
      return "Successfully added order to the order history"
-})
+});
+
+exports.getSmoothieNames = functions.https.onCall(async (data, context) => {
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315331_team_13_master',
+        password: 'Lucky_13',
+        database: 'csce315331_team_13',
+        port: 5432,
+    });
+
+    await client.connect()
+
+    const res = await client.query("SELECT menu_item FROM menu_items WHERE type='smoothie'");
+
+    client.end()
+
+    return res.rows
+});
+
+exports.getSnackNames = functions.https.onCall(async (data, context) => {
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315331_team_13_master',
+        password: 'Lucky_13',
+        database: 'csce315331_team_13',
+        port: 5432,
+    });
+
+    await client.connect()
+
+    const res = await client.query("SELECT menu_item FROM menu_items WHERE type='snack'");
+
+    client.end()
+
+    return res.rows
+});
+
+exports.getAddonNames = functions.https.onCall(async (data, context) => {
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315331_team_13_master',
+        password: 'Lucky_13',
+        database: 'csce315331_team_13',
+        port: 5432,
+    });
+
+    await client.connect()
+
+    const res = await client.query("SELECT menu_item FROM menu_items WHERE type='addon'");
+
+    client.end()
+
+    return res.rows
+});
 
 
 
