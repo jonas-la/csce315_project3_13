@@ -1,4 +1,7 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
+import '../Login/Win_Login.dart';
 import 'smoothie_order.dart';
 import 'curr_order.dart';
 import 'addon_order.dart';
@@ -43,16 +46,16 @@ class Win_Order_State extends State<Win_Order> {
   String _curr_customer = 'None';
   smoothie_order _curr_smoothie = smoothie_order(smoothie: 'ERROR', Size: 'ERROR', price: 0, table_index: 0);
   curr_order _current_order = curr_order();
-  bool curr_editing = false;
+  bool _curr_editing = false;
 
-  // data displayed on table
-  final List<Map<String, dynamic>> _orderTable = [];
-  final List<Map<String, dynamic>> _addonTable = [];
+  // data displayed on tables
+  final List<Map<String, String>> _orderTable = [];
+  final List<Map<String, String>> _addonTable = [];
 
-  // adds row to table
+  // adds row to order table
   void _addToOrder(String item, String size, double price) {
     final newRow = {
-      'index': _orderTable.length + 1,
+      'index': (_orderTable.length + 1).toString(),
       'name': item,
       'size': size,
       'price': price.toStringAsFixed(2),
@@ -62,18 +65,22 @@ class Win_Order_State extends State<Win_Order> {
     });
   }
 
+  // add addon to addon table
   void _addAddon(String item, double price) {
     final newRow = {
-      'index': _addonTable.length + 1,
+      'index': (_addonTable.length + 1).toString(),
       'name': item,
       'price': price.toStringAsFixed(2),
     };
     setState(() {
-      _addonTable.add(newRow);
+      // limit addons to 8
+      if (_addonTable.length < 8) {
+        _addonTable.add(newRow);
+      }
     });
   }
 
-  // creates a popip screen asking for user info (currently, just the name)
+  // creates a popup asking for user info (currently, just the name)
   void customerInfo() {
     showDialog(
       context: context,
@@ -105,25 +112,23 @@ class Win_Order_State extends State<Win_Order> {
       },
     );
   }
-  
+
   @override
   Widget build(BuildContext context) {
-    // half of the width of the current screen, used to align table
-    final double width = MediaQuery.of(context).size.width / 2;
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 100,
-        elevation: 0,
-        backgroundColor: Colors.white,
-        title: SizedBox(
-          height: 80,
-          child: Image.asset(
-            'assets/logo.png',
-            fit: BoxFit.contain,
+        appBar: AppBar(
+          toolbarHeight: 100,
+          elevation: 0,
+          backgroundColor: Colors.white,
+          title: SizedBox(
+            height: 80,
+            child: Image.asset(
+              'assets/logo.png',
+              fit: BoxFit.contain,
+            ),
           ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
         body: Row(
           children: <Widget>[
             Expanded(
@@ -131,10 +136,10 @@ class Win_Order_State extends State<Win_Order> {
                 children: <Widget>[
                   Stack(
                     children: [
+                      // Order table
                       Visibility(
                         visible: _activetable == 0,
                         child: Container(
-                          width: width,
                           alignment: Alignment.topCenter,
                           child: ListView(
                             shrinkWrap: true,
@@ -165,8 +170,9 @@ class Win_Order_State extends State<Win_Order> {
                                             // Todo: find a more efficient way to change indexes
                                             _current_order.remove(item['index']);
                                             _orderTable.removeAt(rowIndex);
+                                            _current_order.reorderIndexes(rowIndex + 1);
                                             for (int i = rowIndex; i < _orderTable.length; i++) {
-                                              _orderTable[i]['index'] = i + 1;
+                                              _orderTable[i]['index'] = (i + 1).toString();
                                             }
                                           });
                                         },
@@ -174,7 +180,7 @@ class Win_Order_State extends State<Win_Order> {
                                     ),
                                     // Todo: disable edit button for snacks
                                     DataCell(
-                                      rowData['size'] == '-' ? IconButton(
+                                      rowData['size'] != '-' ? IconButton(
                                         icon: Icon(Icons.edit),
                                         onPressed: () {
                                           if (rowData['size'] != '-') {
@@ -182,6 +188,7 @@ class Win_Order_State extends State<Win_Order> {
                                               Map<String,
                                                   dynamic> item = _orderTable
                                                   .elementAt(rowIndex);
+                                              _orderTable.removeAt(rowIndex);
                                               _curr_smoothie =
                                                   _current_order.remove(
                                                       item['index']);
@@ -193,6 +200,7 @@ class Win_Order_State extends State<Win_Order> {
                                                 _addAddon(
                                                     addon.name, addon.price);
                                               }
+                                              _curr_editing = true;
                                             });
                                           }
                                         },
@@ -205,10 +213,10 @@ class Win_Order_State extends State<Win_Order> {
                           ),
                         ),
                       ),
+                      // Addon table, appears when adding or editing smoothie in order
                       Visibility(
                         visible: _activetable == 1,
                         child: Container(
-                          width: width,
                           alignment: Alignment.topCenter,
                           child: ListView(
                             shrinkWrap: true,
@@ -234,6 +242,9 @@ class Win_Order_State extends State<Win_Order> {
                                           setState(() {
                                             _addonTable.removeAt(rowIndex);
                                             _curr_smoothie.removeAddon(rowIndex);
+                                            for (int i = rowIndex; i < _addonTable.length; i++) {
+                                              _addonTable[i]['index'] = (i + 1).toString();
+                                            }
                                           });
                                         },
                                       ),
@@ -254,26 +265,28 @@ class Win_Order_State extends State<Win_Order> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Expanded(
-                            child: TextButton(
-                              onPressed: () {
-                                customerInfo();
-                              },
-                              child: Column(
-                                children: [
-                                  Icon(
-                                    Icons.person,
-                                    size: 75,
-                                  ),
-                                  Text(
-                                    '$_curr_customer',
-                                  )
-                                ],
-                              ),
+                          child: TextButton(
+                            onPressed: () {
+                              customerInfo();
+                            },
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.person,
+                                  size: 75,
+                                ),
+                                Text(
+                                  '$_curr_customer',
+                                )
+                              ],
                             ),
+                          ),
                         ),
                         Expanded(
-                          child: Text(
+                          child: Center(
+                            child: Text(
                               'Total: ${_current_order.price.toStringAsFixed(2)}',
+                            ),
                           ),
                         )
                       ],
@@ -287,19 +300,20 @@ class Win_Order_State extends State<Win_Order> {
                       children: <Widget>[
                         Expanded(
                           child: TextButton(
-                              onPressed: () {
-                                print("Logged Out");
-                                Navigator.pop(context);
-                              },
-                              child: Icon(
-                                Icons.logout,
-                              ),
+                            onPressed: () {
+                              print("Logged Out");
+                              Navigator.pushReplacementNamed(context, Win_Login.route);
+                            },
+                            child: Icon(
+                              Icons.logout,
+                            ),
                           ),
                         ),
                         Expanded(
                           child: TextButton(
                             onPressed: () {
                               setState(() {
+                                _current_order.clear();
                                 _orderTable.clear();
                               });
                               print("Cancel Order");
@@ -309,6 +323,7 @@ class Win_Order_State extends State<Win_Order> {
                             ),
                           ),
                         ),
+                        // Todo: Process order
                         Expanded(
                           child: TextButton(
                             onPressed: () {
@@ -317,20 +332,20 @@ class Win_Order_State extends State<Win_Order> {
                               //todo: process order
                               print("Snacks purchased:  ");
                               for (snack_order snack in snacks)
-                                {
-                                  print("   ${snack.name}");
-                                }
+                              {
+                                print("   ${snack.name}");
+                              }
                               print("Smoothies purchased: ");
                               for (smoothie_order smoothie in smoothies)
+                              {
+                                print("   ${smoothie.getSmoothie()}");
+                                List<addon_order> addons = smoothie.getAddons();
+                                print("    With Addons: ");
+                                for (addon_order addon in addons)
                                 {
-                                  print("   ${smoothie.getSmoothie()}");
-                                  List<addon_order> addons = smoothie.getAddons();
-                                  print("    With Addons: ");
-                                  for (addon_order addon in addons)
-                                    {
-                                      print("        " + addon.name);
-                                    }
+                                  print("        " + addon.name);
                                 }
+                              }
                             },
                             child: Icon(
                               Icons.monetization_on,
@@ -343,6 +358,7 @@ class Win_Order_State extends State<Win_Order> {
                 ],
               ),
             ),
+            // Navigation between smoothie and snack button grids
             Expanded(
               child: Stack(
                 children: <Widget>[
@@ -358,22 +374,22 @@ class Win_Order_State extends State<Win_Order> {
                             children: <Widget>[
                               Expanded(
                                 child: TextButton(
-                                    onPressed: (){
-                                      setState(() {
-                                        _activeMenu = 0;
-                                      });
-                                    },
-                                    child: Text("Smoothies"),
+                                  onPressed: (){
+                                    setState(() {
+                                      _activeMenu = 0;
+                                    });
+                                  },
+                                  child: Text("Smoothies"),
                                 ),
                               ),
                               Expanded(
                                 child: TextButton(
-                                    onPressed: (){
-                                      setState(() {
-                                        _activeMenu = 1;
-                                      });
-                                    },
-                                    child: Text("Snacks"),
+                                  onPressed: (){
+                                    setState(() {
+                                      _activeMenu = 1;
+                                    });
+                                  },
+                                  child: Text("Snacks"),
                                 ),
                               ),
                             ],
@@ -382,6 +398,7 @@ class Win_Order_State extends State<Win_Order> {
                         Expanded(
                           child: Stack(
                             children: <Widget>[
+                              // smoothie button grid
                               Visibility(
                                 visible: _activeMenu == 0,
                                 child: Scrollbar(
@@ -401,29 +418,29 @@ class Win_Order_State extends State<Win_Order> {
                                         children: Smoothie_names
                                         // Todo: create custom button class
                                             .map((name) => ElevatedButton(
-                                              onPressed: () {
-                                                setState(() {
-                                                  //Todo: get price of medium smoothie
-                                                  double med_price = 5.59;
-                                                  _curr_smoothie = smoothie_order(smoothie: name,
-                                                      Size: 'medium', price: med_price,
-                                                      table_index: _orderTable.length + 1,
-                                                  );
-                                                  _activeMenu2 = 1;
-                                                  _activetable = 1;
-                                                });
-                                              },
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Expanded(child: SizedBox(height: 5,)),
-                                                  Text(
-                                                    name,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: TextStyle(fontSize: 25,),
-                                                    textAlign: TextAlign.center,
-                                                  ),
-                                                  Expanded(child: SizedBox(height: 5,)),
+                                          onPressed: () {
+                                            setState(() {
+                                              //Todo: get price of medium smoothie
+                                              double med_price = 5.59;
+                                              _curr_smoothie = smoothie_order(smoothie: name,
+                                                Size: 'medium', price: med_price,
+                                                table_index: _orderTable.length + 1,
+                                              );
+                                              _activeMenu2 = 1;
+                                              _activetable = 1;
+                                            });
+                                          },
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                name,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(fontSize: 25,),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              /*               Expanded(child: SizedBox(height: 5,)),
                                                   Padding(
                                                     padding: const EdgeInsets.all(8.0),
                                                     child: Text(
@@ -436,14 +453,16 @@ class Win_Order_State extends State<Win_Order> {
                                                       textAlign: TextAlign.end,
                                                     ),
                                                   )
-                                                ],
-                                              ),
-                                            )).toList(),
-                                        ),
+                                     */           ],
+                                          ),
+                                        )).toList(),
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
+
+                              // snack button grid
                               Visibility(
                                 visible: _activeMenu == 1,
                                 child: Scrollbar(
@@ -467,9 +486,9 @@ class Win_Order_State extends State<Win_Order> {
                                             // todo: get price of snack using name
                                             double snack_price = 1.99;
                                             snack_order snack = snack_order(
-                                                name: name,
-                                                price: snack_price,
-                                                table_index: _orderTable.length + 1,
+                                              name: name,
+                                              price: snack_price,
+                                              table_index: _orderTable.length + 1,
                                             );
                                             _addToOrder(name, '-', snack_price);
                                             setState(() {
@@ -478,15 +497,15 @@ class Win_Order_State extends State<Win_Order> {
                                           },
                                           child: Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
-                                              const Expanded(child: SizedBox(height: 5,)),
                                               Text(
                                                 name,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(fontSize: 25,),
                                                 textAlign: TextAlign.center,
                                               ),
-                                              const Expanded(child: SizedBox(height: 5,)),
+                                              /*                 const Expanded(child: SizedBox(height: 5,)),
                                               Padding(
                                                 padding: const EdgeInsets.all(8.0),
                                                 child: Text(
@@ -499,7 +518,7 @@ class Win_Order_State extends State<Win_Order> {
                                                   textAlign: TextAlign.end,
                                                 ),
                                               )
-                                            ],
+                               */             ],
                                           ),
                                         )).toList(),
                                       ),
@@ -529,6 +548,18 @@ class Win_Order_State extends State<Win_Order> {
                                   child: ElevatedButton(
                                     onPressed: (){
                                       setState(() {
+                                        // if currently editing, add smoothie back to order
+                                        if (_curr_editing){
+                                          Map<String, String> newRow = {
+                                            'index': _curr_smoothie.table_index.toString(),
+                                            'name': _curr_smoothie.smoothie,
+                                            'size': _curr_smoothie.Size,
+                                            'price': _curr_smoothie.getCost().toStringAsFixed(2),
+                                          };
+                                          _orderTable.insert(_curr_smoothie.table_index - 1, newRow);
+                                          _current_order.addSmoothie(_curr_smoothie);
+                                          _curr_editing = false;
+                                        }
                                         _activeMenu2 = 0;
                                         _activetable = 0;
                                         _addonTable.clear();
@@ -538,6 +569,8 @@ class Win_Order_State extends State<Win_Order> {
                                   ),
                                 ),
                               ),
+
+                              // widget used to cycle through smoothie sizes
                               Expanded(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -556,11 +589,11 @@ class Win_Order_State extends State<Win_Order> {
                                               _curr_smoothie.setSmoothieSize('small');
                                             }
                                           });
-                                          },
+                                        },
                                         child: Icon(Icons.arrow_drop_up)
                                     ),
                                     Text(
-                                    _curr_smoothie.getSmoothie(),
+                                      _curr_smoothie.getSmoothie(),
                                       style: TextStyle(
                                         overflow: TextOverflow.ellipsis,
                                         fontWeight: FontWeight.bold,
@@ -587,6 +620,8 @@ class Win_Order_State extends State<Win_Order> {
                                   ],
                                 ),
                               ),
+
+                              // Adds smoothie with addons to order
                               Expanded(
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 50),
@@ -596,24 +631,27 @@ class Win_Order_State extends State<Win_Order> {
                                           // Todo: get smoothie price
                                           double smoothie_price = 5.59;
                                           _curr_smoothie.setSmoothiePrice(smoothie_price);
-                                          if (curr_editing)
-                                            {
-                                              Map<String, dynamic> newRow = {
-                                                'index': _curr_smoothie.table_index,
-                                                'name': _curr_smoothie.smoothie,
-                                                'size': _curr_smoothie.Size,
-                                                'price': _curr_smoothie.getCost(),
-                                              };
-                                              _addonTable.insert(_curr_smoothie.table_index - 1, {newRow} as Map<String, dynamic>);
-                                            }
+
+                                          // if currently editing smoothie, insert it to previous index
+                                          if (_curr_editing)
+                                          {
+                                            Map<String, String> newRow = {
+                                              'index': _curr_smoothie.table_index.toString(),
+                                              'name': _curr_smoothie.smoothie,
+                                              'size': _curr_smoothie.Size,
+                                              'price': _curr_smoothie.getCost().toStringAsFixed(2),
+                                            };
+                                            _orderTable.insert(_curr_smoothie.table_index - 1, newRow);
+                                            _curr_editing = false;
+                                          }
                                           else {
                                             _addToOrder(
                                                 _curr_smoothie.getName(),
                                                 _curr_smoothie.getSize(),
                                                 _curr_smoothie.getCost());
-                                            _current_order.addSmoothie(
-                                                _curr_smoothie);
                                           }
+                                          _current_order.addSmoothie(
+                                              _curr_smoothie);
                                           _activeMenu2 = 0;
                                           _activetable = 0;
                                           _addonTable.clear();
@@ -626,6 +664,8 @@ class Win_Order_State extends State<Win_Order> {
                             ],
                           ),
                         ),
+
+                        // Addon table
                         Expanded(
                           child: Scrollbar(
                             thickness: 30,
@@ -656,15 +696,15 @@ class Win_Order_State extends State<Win_Order> {
                                     },
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
-                                        Expanded(child: SizedBox(height: 5,)),
                                         Text(
                                           name,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(fontSize: 25,),
                                           textAlign: TextAlign.center,
                                         ),
-                                        Expanded(child: SizedBox(height: 5,)),
+                                        /*                Expanded(child: SizedBox(height: 5,)),
                                         Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: Text(
@@ -676,7 +716,7 @@ class Win_Order_State extends State<Win_Order> {
                                             textAlign: TextAlign.end,
                                           ),
                                         )
-                                      ],
+                      */                ],
                                     ),
                                   )).toList(),
                                 ),
@@ -690,8 +730,8 @@ class Win_Order_State extends State<Win_Order> {
                 ],
               ),
             ),
-        ],
-      )
+          ],
+        )
     );
   }
 }

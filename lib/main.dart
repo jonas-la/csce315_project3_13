@@ -1,6 +1,7 @@
 import 'package:csce315_project3_13/Constants/constants.dart';
 import 'package:csce315_project3_13/GUI/Pages/Login/Win_Create_Account.dart';
 import 'package:csce315_project3_13/GUI/Pages/Login/Win_Reset_Password.dart';
+import 'package:csce315_project3_13/GUI/Pages/Order/Win_Order.dart';
 import 'package:csce315_project3_13/GUI/Pages/Test%20Pages/Win_Functions_Test_Page.dart';
 import 'package:csce315_project3_13/GUI/Pages/Win_Manager_View.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
         Win_Create_Account.route: (BuildContext context) => Win_Create_Account(),
         Win_Manager_View.route: (BuildContext context) => Win_Manager_View(),
         Win_Functions_Test_Page.route: (BuildContext context) => Win_Functions_Test_Page(),
+        Win_Order.route : (BuildContext context) => Win_Order(),
       },
       initialRoute: Win_Login.route,
     );
