@@ -149,6 +149,27 @@ exports.addMenuItem = functions.https.onCall(async (data, context) => {
     return "Added menu item to database"
 });
 
+exports.deleteMenuItem = functions.https.onCall(async (data, context) => {
+
+     const client = new Client({
+           host: 'csce-315-db.engr.tamu.edu',
+           user: 'csce315331_team_13_master',
+           password: 'Lucky_13',
+           database: 'csce315331_team_13',
+           port: 5432,
+     });
+
+     await client.connect()
+
+     const {menu_item} = data
+
+     const res = await client.query('DELETE FROM menu_items WHERE menu_item LIKE \'%' + menu_item + '%\'')
+
+     client.end()
+
+     return "deleted menu item from database"
+ });
+
 // Adds an ingredient row to the ingredients_table table
 exports.insertIntoIngredientsTable = functions.https.onCall(async (data, context) => {
     const client = new Client({

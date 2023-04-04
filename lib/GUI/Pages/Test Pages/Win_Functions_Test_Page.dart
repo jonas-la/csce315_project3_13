@@ -1,6 +1,8 @@
 
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:csce315_project3_13/Models/models_library.dart';
 import 'package:csce315_project3_13/Services/login_helper.dart';
+import 'package:csce315_project3_13/Services/menu_item_helper.dart';
 import 'package:csce315_project3_13/Services/order_processing_helper.dart';
 import 'package:flutter/material.dart';
 import '../../../Services/testing_cloud_functions.dart';
@@ -20,6 +22,7 @@ class _Win_Functions_Test_Page_StartState extends State<Win_Functions_Test_Page>
   testing_cloud_functions cloud_functions_tester = testing_cloud_functions();
   order_processing_helper order_helper = order_processing_helper();
   login_helper login_helper_instance = login_helper();
+  menu_item_helper menu_helper = menu_item_helper();
 
   
   @override
@@ -64,7 +67,13 @@ class _Win_Functions_Test_Page_StartState extends State<Win_Functions_Test_Page>
             const SizedBox(
               height: 20,
             ),
-
+            ElevatedButton(onPressed: (){
+              menu_item_obj obj = menu_item_obj(500, "test item", 50.50, 500, "smoothie", []);
+              menu_helper.add_menu_item(obj);
+            }, child: const Text("add")),
+            const SizedBox(
+              height: 20,
+            ),
 
 
 
