@@ -1,5 +1,7 @@
+
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:csce315_project3_13/Services/login_helper.dart';
+import 'package:csce315_project3_13/Services/order_processing_helper.dart';
 import 'package:flutter/material.dart';
 import '../../../Services/testing_cloud_functions.dart';
 import '../Win_Manager_View.dart';
@@ -14,8 +16,9 @@ class Win_Functions_Test_Page extends StatefulWidget {
 
 class _Win_Functions_Test_Page_StartState extends State<Win_Functions_Test_Page> {
 
-  testing_cloud_functions cloud_functions_tester = testing_cloud_functions();
 
+  testing_cloud_functions cloud_functions_tester = testing_cloud_functions();
+  order_processing_helper order_helper = order_processing_helper();
   login_helper login_helper_instance = login_helper();
 
   
@@ -52,7 +55,6 @@ class _Win_Functions_Test_Page_StartState extends State<Win_Functions_Test_Page>
             ElevatedButton(onPressed: (){
               login_helper_instance.get_firebase_uid();
             }, child: const Text("Get UID")),
-
             const SizedBox(
               height: 20,
             ),

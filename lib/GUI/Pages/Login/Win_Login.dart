@@ -1,3 +1,4 @@
+import 'package:csce315_project3_13/GUI/Components/Login_Button.dart';
 import 'package:csce315_project3_13/GUI/Pages/Login/Win_Create_Account.dart';
 import 'package:csce315_project3_13/GUI/Pages/Login/Win_Reset_Password.dart';
 import 'package:csce315_project3_13/GUI/Pages/Test%20Pages/Win_Functions_Test_Page.dart';
@@ -62,16 +63,22 @@ class _Win_LoginState extends State<Win_Login> {
 
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(onPressed: (){
+                child: Login_Button(onTap: (){
                   Navigator.pushReplacementNamed(context, Win_Create_Account.route);
-                }, child: const Text("Create account")),
+                },
+                    buttonName: "Create account",
+                fontSize: 15,
+                ),
               ),
 
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(onPressed: (){
+                child: Login_Button(onTap: (){
                   Navigator.pushReplacementNamed(context, Win_Reset_Password.route);
-                }, child: const Text("Reset password")),
+                },
+                    buttonName: "Reset password",
+                fontSize: 15,
+                ),
               ),
             ],
           ),
@@ -134,9 +141,12 @@ class _Win_LoginState extends State<Win_Login> {
 
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(onPressed: (){
+                child: Login_Button(onTap: (){
                   _login(context);
-                }, child: const Text("Login")),
+                },
+                  buttonName: "Login"
+
+                )
               ),
 
 

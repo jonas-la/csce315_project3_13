@@ -119,6 +119,7 @@ exports.getLastIngredientsTableID = functions.https.onCall(async (data, context)
 
 })
 
+// Adds a menu item to the menu_items table
 exports.addMenuItem = functions.https.onCall(async (data, context) => {
 
     const client = new Client({
@@ -140,6 +141,7 @@ exports.addMenuItem = functions.https.onCall(async (data, context) => {
     return "Added menu item to database"
 });
 
+// Adds an ingredient row to the ingredients_table table
 exports.insertIntoIngredientsTable = functions.https.onCall(async (data, context) => {
     const client = new Client({
           host: 'csce-315-db.engr.tamu.edu',
@@ -160,6 +162,170 @@ exports.insertIntoIngredientsTable = functions.https.onCall(async (data, context
     return "Added ingredient to ingredients_table"
 });
 
+// Takes a row_id and a new_amount, updates the ingredients_table at row_id and changes the quantity to new_amount
+exports.updateIngredientsTableRow = functions.https.onCall(async (data, context) => {
+    const client = new Client({
+          host: 'csce-315-db.engr.tamu.edu',
+          user: 'csce315331_team_13_master',
+          password: 'Lucky_13',
+          database: 'csce315331_team_13',
+          port: 5432,
+    });
+
+    await client.connect()
+
+    const {row_id} = data
+    const {new_amount} = data
+
+    const res = await client.query('UPDATE ingredients_table SET ingredient_amount=' + new_amount + ' WHERE row_id=' + row_id)
+
+    client.end()
+
+    return "Successfully updated ingredients_table row"
+})
+
+// Deletes an individual row from the ingredients_table
+exports.deleteIngredientsTableRow = functions.https.onCall(async (data, context) => {
+    const client = new Client({
+          host: 'csce-315-db.engr.tamu.edu',
+          user: 'csce315331_team_13_master',
+          password: 'Lucky_13',
+          database: 'csce315331_team_13',
+          port: 5432,
+    });
+
+    await client.connect()
+
+    const {row_id} = data
+
+    const res = await client.query('DELETE FROM ingredients_table WHERE row_id=' + row_id)
+
+    client.end()
+
+    return "Successfully deleted ingredients_table row"
+})
+
+exports.getMenuItemName = functions.https.onCall(async (data, context) => {
+    const client = new Client({
+          host: 'csce-315-db.engr.tamu.edu',
+          user: 'csce315331_team_13_master',
+          password: 'Lucky_13',
+          database: 'csce315331_team_13',
+          port: 5432,
+    });
+
+    await client.connect()
+
+    const {menu_item_id} = data
+
+    const res = await client.query('SELECT menu_item FROM menu_items WHERE menu_item_id=' + menu_item_id)
+
+    client.end()
+
+    return res.rows
+})
+
+exports.getMenuItemType = functions.https.onCall(async (data, context) => {
+    const client = new Client({
+          host: 'csce-315-db.engr.tamu.edu',
+          user: 'csce315331_team_13_master',
+          password: 'Lucky_13',
+          database: 'csce315331_team_13',
+          port: 5432,
+    });
+
+    await client.connect()
+
+    const {menu_item_id} = data
+
+    const res = await client.query('SELECT type FROM menu_items WHERE menu_item_id=' + menu_item_id)
+
+    client.end()
+
+    return res.rows
+})
+
+exports.getMenuItemIngredients = functions.https.onCall(async (data, context) => {
+    const client = new Client({
+          host: 'csce-315-db.engr.tamu.edu',
+          user: 'csce315331_team_13_master',
+          password: 'Lucky_13',
+          database: 'csce315331_team_13',
+          port: 5432,
+    });
+
+    await client.connect()
+
+    const {menu_item_name} = data
+
+    const res = await client.query('SELECT ingredient_name, ingredient_amount FROM ingredients_table WHERE menu_item_name=\'' + menu_item_name + '\'')
+
+    client.end()
+
+    return res.rows
+})
+
+exports.getAmountInvStock = functions.https.onCall(async (data, context) => {
+    const client = new Client({
+          host: 'csce-315-db.engr.tamu.edu',
+          user: 'csce315331_team_13_master',
+          password: 'Lucky_13',
+          database: 'csce315331_team_13',
+          port: 5432,
+    });
+
+    await client.connect()
+
+    const {ingredient} = data
+
+    const res = await client.query('SELECT inv_order_id, amount_inv_stock FROM inventory WHERE ingredient=\'' + ingredient + '\' ORDER BY expiration_date DESC, date_ordered');
+
+    client.end()
+
+    return res.rows
+})
+
+exports.updateInventoryRow = functions.https.onCall(async (data, context) => {
+    const client = new Client({
+          host: 'csce-315-db.engr.tamu.edu',
+          user: 'csce315331_team_13_master',
+          password: 'Lucky_13',
+          database: 'csce315331_team_13',
+          port: 5432,
+    });
+
+    await client.connect()
+
+    const {inv_order_id} = data
+    const {new_amount} = data
+
+    const res = await client.query('UPDATE inventory SET amount_inv_stock=' + new_amount + 'WHERE inv_order_id=' + inv_order_id)
+
+    client.end()
+
+    return "Successfully updated inventory row"
+
+})
+
+exports.insertIntoOrderHistory = functions.https.onCall(async (data, context) => {
+     const client = new Client({
+           host: 'csce-315-db.engr.tamu.edu',
+           user: 'csce315331_team_13_master',
+           password: 'Lucky_13',
+           database: 'csce315331_team_13',
+           port: 5432,
+     });
+
+     await client.connect()
+
+     const {values} = data
+
+     const res = await client.query('INSERT INTO order_history (transaction_id, order_taker_id, item_ids_in_order, total_price, customer_name, date_of_order, status) VALUES(' + values + ')')
+
+     client.end()
+
+     return "Successfully added order to the order history"
+})
 
 
 

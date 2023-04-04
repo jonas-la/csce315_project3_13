@@ -1,3 +1,4 @@
+import 'package:csce315_project3_13/GUI/Components/Login_Button.dart';
 import 'package:csce315_project3_13/GUI/Pages/Login/Win_Login.dart';
 import 'package:csce315_project3_13/Services/login_helper.dart';
 import 'package:flutter/material.dart';
@@ -49,9 +50,11 @@ class _Win_Reset_PasswordState extends State<Win_Reset_Password> {
 
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(onPressed: (){
+            child: Login_Button(onTap: (){
               Navigator.pushReplacementNamed(context, Win_Login.route);
-            }, child: const Text("Back")),
+            }, buttonName: "Back",
+            fontSize: 15
+            ),
           ),
 
         ],
@@ -89,9 +92,11 @@ class _Win_Reset_PasswordState extends State<Win_Reset_Password> {
 
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(onPressed: (){
+                child: Login_Button(onTap: (){
                   _reset_password(user_email: _email_controller.text, context: context);
-                }, child: const Text("Send reset email")),
+                }, buttonName: "Reset email",
+                buttonWidth: 150
+                ),
               ),
 
 
