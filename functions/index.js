@@ -213,6 +213,27 @@ exports.insertIntoIngredientsTable = functions.https.onCall(async (data, context
     return "Added ingredient to ingredients_table"
 });
 
+exports.getIngredientRowId = functions.https.onCall(async (data, context) => {
+     const client = new Client({
+           host: 'csce-315-db.engr.tamu.edu',
+           user: 'csce315331_team_13_master',
+           password: 'Lucky_13',
+           database: 'csce315331_team_13',
+           port: 5432,
+     });
+
+     await client.connect()
+
+     const {menu_item_name} = data
+     const {ingredient_name} = data
+
+     const res = await client.query('SELECT row_id FROM ingredients_table WHERE menu_item_name=\'' + menu_item_name + '\' AND ingredient_name=\'' + ingredient_name + '\'')
+
+     client.end()
+
+     return res.rows
+ })
+
 // Takes a row_id and a new_amount, updates the ingredients_table at row_id and changes the quantity to new_amount
 exports.updateIngredientsTableRow = functions.https.onCall(async (data, context) => {
     const client = new Client({

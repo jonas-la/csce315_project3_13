@@ -81,6 +81,37 @@ class menu_item_helper
 
   }
 
+  Future<void> edit_smoothie_ingredients(int menu_item_id, Map<String, int> new_ingredients) async
+  {
+    Map<String, int> current_ingredients = await gen_helper.get_smoothie_ingredients(menu_item_id);
+    String menu_item_name = await gen_helper.get_item_name(menu_item_id);
+
+    for(MapEntry<String, int> ingredient in new_ingredients.entries) {
+      if(current_ingredients.containsKey(ingredient.key)) {
+        int row_id = await gen_helper.get_ingredient_row_id(menu_item_name, ingredient.key);
+        if(ingredient.value == 0) { // Remove the ingredient from the smoothie
+          HttpsCallable remover = FirebaseFunctions.instance.httpsCallable('deleteIngredientsTableRow');
+          await remover.call({'row_id': row_id});
+        } else if(current_ingredients[ingredient.key] == ingredient.value) {} // Leave it alone if the values are the same
+        else { // Update the ingredient amount
+          HttpsCallable updater = FirebaseFunctions.instance.httpsCallable('updateIngredientsTableRow');
+          await updater.call({
+            'row_id': row_id,
+            'new_amount': ingredient.value
+          });
+        }
+      } else { // Doesn't exist yet, so add it
+        HttpsCallable adder = FirebaseFunctions.instance.httpsCallable('insertIntoIngredientsTable');
+        HttpsCallable getIngrID = FirebaseFunctions.instance.httpsCallable('getLastIngredientsTableID');
+        final ingrIDQuery = await getIngrID();
+        List<dynamic> data = ingrIDQuery.data;
+        int last_ingr_id = data[0]['row_id'];
+        ingredient_obj new_ing = ingredient_obj(last_ingr_id + 1, menu_item_name, ingredient.key, ingredient.value);
+        await adder.call({'values': new_ing.get_values()});
+      }
+    }
+  }
+
   Future<void> edit_item_price(int menu_item_id, double new_price) async
   {
     HttpsCallable editor = FirebaseFunctions.instance.httpsCallable('editItemPrice');
