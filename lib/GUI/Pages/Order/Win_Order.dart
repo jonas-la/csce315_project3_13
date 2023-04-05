@@ -6,6 +6,7 @@ import 'curr_order.dart';
 import 'addon_order.dart';
 import 'snack_order.dart';
 import '../Loading/Loading_Order_Win.dart';
+import '../../../Models/models_library.dart';
 
 class Win_Order extends StatefulWidget {
   static const String route = '/order';
@@ -167,6 +168,28 @@ class Win_Order_State extends State<Win_Order>{
             )).toList(),
           );
 
+  }
+
+  Future<List<int>> getIds() async{
+    List<smoothie_order> smoothies= _current_order.getSmoothies();
+    List<snack_order> snacks = _current_order.getSnacks();
+    Future<List<int>> item_ids = Future.value([]);
+    for (snack_order snack in snacks)
+    {
+
+    }
+    print("Smoothies purchased: ");
+    for (smoothie_order smoothie in smoothies)
+    {
+      print("   ${smoothie.getSmoothie()}");
+      List<addon_order> addons = smoothie.getAddons();
+      print("    With Addons: ");
+      for (addon_order addon in addons)
+      {
+        print("        " + addon.name);
+      }
+    }
+    return item_ids;
   }
 
   @override
@@ -388,7 +411,9 @@ class Win_Order_State extends State<Win_Order>{
                         Expanded(
                           child: TextButton(
                             onPressed: () {
-                              List<smoothie_order> smoothies= _current_order.getSmoothies();
+                              Future<List<int>> item_ids_in_order = getIds();
+                              order_obj process_order = order_obj(5001, 3, item_ids_in_order, _current_order.price, _curr_customer, '4/5/2023', 'Completed');
+                              /*List<smoothie_order> smoothies= _current_order.getSmoothies();
                               List<snack_order> snacks = _current_order.getSnacks();
                               //todo: process order
                               print("Snacks purchased:  ");
@@ -406,7 +431,7 @@ class Win_Order_State extends State<Win_Order>{
                                 {
                                   print("        " + addon.name);
                                 }
-                              }
+                              }*/
                             },
                             child: const Icon(
                               Icons.monetization_on,

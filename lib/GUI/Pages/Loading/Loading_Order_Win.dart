@@ -20,6 +20,7 @@ class _Loading_Order_WinState extends State<Loading_Order_Win> {
   late Future<List<String>> _smoothieNames;
   late Future<List<String>> _snackNames;
   late Future<List<String>> _addonNames;
+  late Future<int> _price;
 
   @override
   void initState() {
@@ -27,7 +28,8 @@ class _Loading_Order_WinState extends State<Loading_Order_Win> {
     _smoothieNames = view_helper().get_unique_smoothie_names();
     _snackNames = view_helper().get_snack_names();
     _addonNames = view_helper().get_addon_names();
-
+    _price = view_helper().get_item_id('Kids Snack');
+    
     _navigateToNextScreen();
   }
 
@@ -35,6 +37,9 @@ class _Loading_Order_WinState extends State<Loading_Order_Win> {
     List<String> smoothieNames = await _smoothieNames;
     List<String> snackNames = await _snackNames;
     List<String> addonNames = await _addonNames;
+    int price = await _price;
+
+    print(price);
 
     Navigator.pushReplacementNamed(
       context,

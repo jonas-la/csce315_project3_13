@@ -17,6 +17,26 @@ class view_helper {
     return names;
   }
 
+  Future<String> get_item_price(String item_name) async
+  {
+    HttpsCallable getter = FirebaseFunctions.instance.httpsCallable('getItemPrice');
+    final item_name_query = await getter.call({'menu_item_name': item_name});
+    List<dynamic> data = item_name_query.data;
+    String item_price = data[0]['menu_item_price'];
+
+    return item_price;
+  }
+
+  Future<int> get_item_id(String item_name) async
+  {
+    HttpsCallable getter = FirebaseFunctions.instance.httpsCallable('getItemID');
+    final item_name_query = await getter.call({'menu_item_name': item_name});
+    List<dynamic> data = item_name_query.data;
+    int item_id = data[0]['menu_item_id'];
+
+    return item_id;
+  }
+
   Future<List<String>> get_unique_smoothie_names() async {
 
     HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('getSmoothieNames');
