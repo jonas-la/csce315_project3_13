@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../Services/view_helper.dart';
 import '../Login/Win_Login.dart';
 import 'smoothie_order.dart';
 import 'curr_order.dart';
@@ -7,28 +8,19 @@ import 'snack_order.dart';
 
 class Win_Order extends StatefulWidget {
   static const String route = '/order';
-  const Win_Order({super.key});
+  Win_Order({super.key});
 
   @override
   State<Win_Order> createState() => Win_Order_State();
 }
 
-class Win_Order_State extends State<Win_Order> {
+class Win_Order_State extends State<Win_Order> with AutomaticKeepAliveClientMixin {
   // Todo: get smoothie names from database
-  final List<String> Smoothie_names = ['smoothie1', 'smoothie2', 'smoothie3',
-    'smoothie4', 'smoothie5', 'smoothie6', 'smoothie7', 'smoothie8', 'smoothie9',
-    'smoothie10', 'smoothie11', 'smoothie12', 'smoothie13', 'smoothie14',
-    'smoothie15','smoothie16', 'smoothie17', 'smoothie18', 'smoothie19',
-    'smoothie20'];
+  final Future<List<String>> Smoothie_names = view_helper().get_unique_smoothie_names();
   // Todo: get snack names from database
-  final List<String> Snack_names = ['snacks1', 'snacks2', 'snacks3', 'snacks4',
-    'snacks5', 'snacks6', 'snacks7', 'snacks8', 'snacks9', 'snacks10', 'snacks11',
-    'snacks12', 'snacks13', 'snacks14', 'snacks15','snacks16', 'snacks17',
-    'snacks18', 'snacks19', 'snacks20'];
+  final Future<List<String>> Snack_names = view_helper().get_snack_names();
   // Todo" get addon names from database
-  final List<String> Addon_names = ['addon1', 'addon2', 'addon3', 'addon4',
-    'addon5', 'addon6', 'addon7','addon8', 'addon9', 'addon10', 'addon11',
-    'addon12', 'addon13', 'addon14', 'addon15', 'addon16', 'addon17', 'addon18',];
+  final Future<List<String>> Addon_names = view_helper().get_addon_names();
 
   // controls visibility between smoothies and snacks menu
   int _activeMenu = 0;
@@ -107,6 +99,82 @@ class Win_Order_State extends State<Win_Order> {
             ),
           ],
         );
+      },
+    );
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+
+  Widget buttonGrid(BuildContext context, Future<List<String>> button_names, String type){
+    return FutureBuilder<List<String>>(
+      future: button_names,
+      builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else {
+          List<String> smoothieNames = snapshot.data!;
+          return GridView.count(
+            shrinkWrap: true,
+            crossAxisCount: 4,
+            padding: const EdgeInsets.all(10),
+            mainAxisSpacing: 20,
+            crossAxisSpacing: 20,
+            children: smoothieNames.map((name) => ElevatedButton(
+              onPressed: () {
+                if (type == "Smoothie" ) {
+                setState(() {
+                  //Todo: get price of medium smoothie
+                  double med_price = 5.59;
+                  _curr_smoothie = smoothie_order(smoothie: name,
+                    Size: 'medium', price: med_price,
+                    table_index: _orderTable.length + 1,
+                  );
+                  _activeMenu2 = 1;
+                  _active_table = 1;
+                });
+                }
+                if (type == 'Snack') {
+                  // todo: get price of snack using name
+                  double snack_price = 1.99;
+                  snack_order snack = snack_order(
+                    name: name,
+                    price: snack_price,
+                    table_index: _orderTable.length + 1,
+                  );
+                  _addToOrder(name, '-', snack_price);
+                  setState(() {
+                    _current_order.addSnack(snack);
+                  });
+                  if (type == 'Addon'){
+                    setState(() {
+                      // Todo: get addon price
+                      double addon_price = 0.99;
+                      addon_order new_addon = addon_order(name: name, price: addon_price, amount: 1);
+                      _curr_smoothie.addAddon(new_addon);
+                      // Todo: get addon price
+                      _addAddon(name, 0.99);
+                    });
+                  }
+                }
+
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    name,
+                    style: const TextStyle(fontSize: 22,),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            )).toList(),
+          );
+        }
       },
     );
   }
@@ -407,55 +475,7 @@ class Win_Order_State extends State<Win_Order> {
                                     primary: true,
                                     child: Container(
                                       color: Colors.pink,
-                                      child: GridView.count(
-                                        shrinkWrap: true,
-                                        crossAxisCount: 4,
-                                        padding: const EdgeInsets.all(10),
-                                        mainAxisSpacing: 20,
-                                        crossAxisSpacing: 20,
-                                        children: Smoothie_names
-                                        // Todo: create custom button class
-                                            .map((name) => ElevatedButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              //Todo: get price of medium smoothie
-                                              double med_price = 5.59;
-                                              _curr_smoothie = smoothie_order(smoothie: name,
-                                                Size: 'medium', price: med_price,
-                                                table_index: _orderTable.length + 1,
-                                              );
-                                              _activeMenu2 = 1;
-                                              _active_table = 1;
-                                            });
-                                          },
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                name,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(fontSize: 25,),
-                                                textAlign: TextAlign.center,
-                                              ),
-                                              // Todo: (stretch goal) add prices to the buttons
-                                              /*               Expanded(child: SizedBox(height: 5,)),
-                                                  Padding(
-                                                    padding: const EdgeInsets.all(8.0),
-                                                    child: Text(
-                                                      // Todo: get price of item
-                                                      5.59.toString(),
-                                                      style: TextStyle(
-                                                        color: Colors.white30,
-                                                        fontSize: 15,
-                                                      ),
-                                                      textAlign: TextAlign.end,
-                                                    ),
-                                                  )
-                                     */           ],
-                                          ),
-                                        )).toList(),
-                                      ),
+                                      child: buttonGrid(context, Smoothie_names, "Smoothie"),
                                     ),
                                   ),
                                 ),
@@ -472,54 +492,7 @@ class Win_Order_State extends State<Win_Order> {
                                     primary: true,
                                     child: Container(
                                       color: Colors.pink,
-                                      child: GridView.count(
-                                        shrinkWrap: true,
-                                        crossAxisCount: 4,
-                                        padding: const EdgeInsets.all(10),
-                                        mainAxisSpacing: 20,
-                                        crossAxisSpacing: 20,
-                                        children: Snack_names
-                                        // Todo: create custom button class
-                                            .map((name) => ElevatedButton(
-                                          onPressed: () {
-                                            // todo: get price of snack using name
-                                            double snack_price = 1.99;
-                                            snack_order snack = snack_order(
-                                              name: name,
-                                              price: snack_price,
-                                              table_index: _orderTable.length + 1,
-                                            );
-                                            _addToOrder(name, '-', snack_price);
-                                            setState(() {
-                                              _current_order.addSnack(snack);
-                                            });
-                                          },
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                name,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(fontSize: 25,),
-                                                textAlign: TextAlign.center,
-                                              ),
-                                              /*                 const Expanded(child: SizedBox(height: 5,)),
-                                              Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Text(
-                                                  3.99.toString(),
-                                                  style: const TextStyle(
-                                                    color: Colors.white30,
-                                                    fontSize: 15,
-                                                  ),
-                                                  textAlign: TextAlign.end,
-                                                ),
-                                              )
-                               */             ],
-                                          ),
-                                        )).toList(),
-                                      ),
+                                      child: buttonGrid(context, Snack_names, "Snacks"),
                                     ),
                                   ),
                                 ),
@@ -665,51 +638,7 @@ class Win_Order_State extends State<Win_Order> {
                               primary: true,
                               child: Container(
                                 color: Colors.pink,
-                                child: GridView.count(
-                                  shrinkWrap: true,
-                                  crossAxisCount: 4,
-                                  padding: const EdgeInsets.all(10),
-                                  mainAxisSpacing: 20,
-                                  crossAxisSpacing: 20,
-                                  children: Addon_names
-                                  // Todo: create custom button class
-                                      .map((name) => ElevatedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        // Todo: get addon price
-                                        double addon_price = 0.99;
-                                        addon_order new_addon = addon_order(name: name, price: addon_price, amount: 1);
-                                        _curr_smoothie.addAddon(new_addon);
-                                        // Todo: get addon price
-                                        _addAddon(name, 0.99);
-                                      });
-                                    },
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          name,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(fontSize: 25,),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        /*                Expanded(child: SizedBox(height: 5,)),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            // Todo: get price of item
-                                            3.99.toString(),
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                            ),
-                                            textAlign: TextAlign.end,
-                                          ),
-                                        )
-                      */                ],
-                                    ),
-                                  )).toList(),
-                                ),
+                                child: buttonGrid(context, Addon_names, 'Addon')
                               ),
                             ),
                           ),
