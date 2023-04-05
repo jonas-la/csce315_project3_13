@@ -192,6 +192,30 @@ class Win_Order_State extends State<Win_Order>{
     return item_ids;
   }
 
+  void process_order() async {
+    List<int> item_ids_in_order = await getIds();
+    order_obj process_order = order_obj(5001, 3, item_ids_in_order, _current_order.price, _curr_customer, '4/5/2023', 'Completed');
+    /*List<smoothie_order> smoothies= _current_order.getSmoothies();
+                              List<snack_order> snacks = _current_order.getSnacks();
+                              //todo: process order
+                              print("Snacks purchased:  ");
+                              for (snack_order snack in snacks)
+                              {
+                                print("   ${snack.name}");
+                              }
+                              print("Smoothies purchased: ");
+                              for (smoothie_order smoothie in smoothies)
+                              {
+                                print("   ${smoothie.getSmoothie()}");
+                                List<addon_order> addons = smoothie.getAddons();
+                                print("    With Addons: ");
+                                for (addon_order addon in addons)
+                                {
+                                  print("        " + addon.name);
+                                }
+                              }*/
+  }
+
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as NextScreenArguments;
@@ -411,27 +435,7 @@ class Win_Order_State extends State<Win_Order>{
                         Expanded(
                           child: TextButton(
                             onPressed: () {
-                              Future<List<int>> item_ids_in_order = getIds();
-                              order_obj process_order = order_obj(5001, 3, item_ids_in_order, _current_order.price, _curr_customer, '4/5/2023', 'Completed');
-                              /*List<smoothie_order> smoothies= _current_order.getSmoothies();
-                              List<snack_order> snacks = _current_order.getSnacks();
-                              //todo: process order
-                              print("Snacks purchased:  ");
-                              for (snack_order snack in snacks)
-                              {
-                                print("   ${snack.name}");
-                              }
-                              print("Smoothies purchased: ");
-                              for (smoothie_order smoothie in smoothies)
-                              {
-                                print("   ${smoothie.getSmoothie()}");
-                                List<addon_order> addons = smoothie.getAddons();
-                                print("    With Addons: ");
-                                for (addon_order addon in addons)
-                                {
-                                  print("        " + addon.name);
-                                }
-                              }*/
+                              process_order();
                             },
                             child: const Icon(
                               Icons.monetization_on,
