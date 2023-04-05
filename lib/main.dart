@@ -1,32 +1,44 @@
+import 'package:csce315_project3_13/Constants/constants.dart';
+import 'package:csce315_project3_13/GUI/Pages/Loading/Loading_Page.dart';
+import 'package:csce315_project3_13/GUI/Pages/Login/Win_Create_Account.dart';
+import 'package:csce315_project3_13/GUI/Pages/Login/Win_Reset_Password.dart';
+import 'package:csce315_project3_13/GUI/Pages/Order/Win_Order.dart';
+import 'package:csce315_project3_13/GUI/Pages/Test%20Pages/Win_Functions_Test_Page.dart';
+import 'package:csce315_project3_13/GUI/Pages/Loading/Loading_Order_Win.dart';
+import 'package:csce315_project3_13/GUI/Pages/Win_Manager_View.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'GUI/Pages/Login/Win_Login.dart';
 
-import 'GUI/Win_Login.dart';
-
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
 
-  // This widget is the root of your application.
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Smoothie King App',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.red,
       ),
-      home: const MyHomePage(),
+      routes:  <String, WidgetBuilder>{
+        Win_Login.route: (BuildContext context) => Win_Login(),
+        Win_Reset_Password.route: (BuildContext context) => Win_Reset_Password(),
+        Win_Create_Account.route: (BuildContext context) => Win_Create_Account(),
+        Win_Manager_View.route: (BuildContext context) => Win_Manager_View(),
+        Win_Functions_Test_Page.route: (BuildContext context) => Win_Functions_Test_Page(),
+        Win_Loading_Page.route: (BuildContext context) => Win_Loading_Page(),
+        Loading_Order_Win.route: (BuildContext context) => Loading_Order_Win(),
+        Win_Order.route: (BuildContext context) => Win_Order(),
+      },
+      initialRoute: Win_Login.route,
     );
   }
 }
