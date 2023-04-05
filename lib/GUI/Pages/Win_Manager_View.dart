@@ -1,6 +1,6 @@
 import 'package:csce315_project3_13/GUI/Components/ExampleButton.dart';
 import 'package:csce315_project3_13/GUI/Pages/Login/Win_Login.dart';
-import 'package:csce315_project3_13/GUI/Pages/Order/Win_Order.dart';
+import 'package:csce315_project3_13/GUI/Pages/Loading/Loading_Order_Win.dart';
 import 'package:flutter/material.dart';
 
 class Win_Manager_View extends StatefulWidget {
@@ -25,7 +25,7 @@ class _Win_Manager_ViewState extends State<Win_Manager_View> {
           children: <Widget>[
             ElevatedButton(
                 onPressed: (){
-                  Navigator.pushReplacementNamed(context, Win_Order.route);
+                  Navigator.pushReplacementNamed(context,Loading_Order_Win.route);
                 }, child: Text('Order')),
             const Text(
               'Logged in',

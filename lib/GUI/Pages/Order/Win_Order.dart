@@ -5,22 +5,23 @@ import 'smoothie_order.dart';
 import 'curr_order.dart';
 import 'addon_order.dart';
 import 'snack_order.dart';
+import '../Loading/Loading_Order_Win.dart';
 
 class Win_Order extends StatefulWidget {
   static const String route = '/order';
-  Win_Order({super.key});
 
   @override
   State<Win_Order> createState() => Win_Order_State();
 }
 
-class Win_Order_State extends State<Win_Order> with AutomaticKeepAliveClientMixin {
+class Win_Order_State extends State<Win_Order>{
+
   // Todo: get smoothie names from database
-  final Future<List<String>> Smoothie_names = view_helper().get_unique_smoothie_names();
+  List<String> Smoothie_names = [];
   // Todo: get snack names from database
-  final Future<List<String>> Snack_names = view_helper().get_snack_names();
+  List<String> Snack_names = [];
   // Todo" get addon names from database
-  final Future<List<String>> Addon_names = view_helper().get_addon_names();
+  List<String> Addon_names = [];
 
   // controls visibility between smoothies and snacks menu
   int _activeMenu = 0;
@@ -106,23 +107,14 @@ class Win_Order_State extends State<Win_Order> with AutomaticKeepAliveClientMixi
   @override
   bool get wantKeepAlive => true;
 
-  Widget buttonGrid(BuildContext context, Future<List<String>> button_names, String type){
-    return FutureBuilder<List<String>>(
-      future: button_names,
-      builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else {
-          List<String> smoothieNames = snapshot.data!;
-          return GridView.count(
+  Widget buttonGrid(BuildContext context, List<String> button_names, String type){
+    return GridView.count(
             shrinkWrap: true,
             crossAxisCount: 4,
             padding: const EdgeInsets.all(10),
             mainAxisSpacing: 20,
             crossAxisSpacing: 20,
-            children: smoothieNames.map((name) => ElevatedButton(
+            children: button_names.map((name) => ElevatedButton(
               onPressed: () {
                 if (type == "Smoothie" ) {
                 setState(() {
@@ -174,13 +166,16 @@ class Win_Order_State extends State<Win_Order> with AutomaticKeepAliveClientMixi
               ),
             )).toList(),
           );
-        }
-      },
-    );
+
   }
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as NextScreenArguments;
+    Smoothie_names = args.smoothieNames;
+    Snack_names = args.snackNames;
+    Addon_names = args.addonNames;
+
     return Scaffold(
         appBar: AppBar(
           toolbarHeight: 100,
